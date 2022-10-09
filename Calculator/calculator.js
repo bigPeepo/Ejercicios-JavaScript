@@ -1,6 +1,7 @@
 let numberList = [];
+
 alert(
-  "Welcome to the calculator program.\nInput one number to get it's square root, input a second one to show a series of operations."
+  "Welcome to Calculator.\nInput one number to get it's square root, input a second one to show a series of operations."
 );
 
 function calculator() {
@@ -8,8 +9,7 @@ function calculator() {
 
   do {
     promptValue = prompt("Enter a number or press cancel to stop");
-
-    if (promptValue === null && numberList.length === 0) {
+    if (promptValue === null && !numberList.length) {
       alert("You need at least a number.");
       continue;
     }
@@ -25,10 +25,6 @@ function calculator() {
 
     if (!isNaN(promptValue) && !!promptValue) {
       numberList.push(+promptValue);
-    }
-
-    if (!numberList.length) {
-      alert("You need at least a number.");
     }
   } while (numberList.length < 2);
 
