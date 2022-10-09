@@ -30,7 +30,6 @@ function calculator() {
     if (!numberList.length) {
       alert("You need at least a number.");
     }
-    console.log(promptValue);
   } while (numberList.length < 2);
 
   return calculatesResults(numberList);

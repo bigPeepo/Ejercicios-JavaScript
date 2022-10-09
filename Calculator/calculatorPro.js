@@ -10,8 +10,18 @@ function calculatorPro() {
   do {
     promptValue = prompt("Enter a number or press cancel to stop");
 
+    if (promptValue === null && numberList.length === 0) {
+      alert("You need at least a number.");
+      continue;
+    }
+
     if (promptValue === null) {
       break;
+    }
+
+    if (isNaN(promptValue) || promptValue === " " || promptValue === "") {
+      alert("You can only input numbers.");
+      continue;
     }
 
     if (!isNaN(promptValue) && !!promptValue) {
