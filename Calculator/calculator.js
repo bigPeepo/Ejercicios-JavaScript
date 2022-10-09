@@ -1,17 +1,26 @@
 let numberList = [];
-
 alert(
-  "Welcome to Calculator Pro.\nInput one number to get it's square root, input a second one to show a series of operations."
+  "Welcome to the calculator program.\nInput one number to get it's square root, input a second one to show a series of operations."
 );
 
-function calculatorPro() {
+function calculator() {
   let promptValue;
 
   do {
     promptValue = prompt("Enter a number or press cancel to stop");
 
+    if (promptValue === null && numberList.length === 0) {
+      alert("You need at least a number.");
+      continue;
+    }
+
     if (promptValue === null) {
       break;
+    }
+
+    if (isNaN(promptValue) || promptValue === " " || promptValue === "") {
+      alert("You can only input numbers.");
+      continue;
     }
 
     if (!isNaN(promptValue) && !!promptValue) {
@@ -21,24 +30,24 @@ function calculatorPro() {
     if (!numberList.length) {
       alert("You need at least a number.");
     }
-  } while (promptValue !== null); //no lo estamos usando
+    console.log(promptValue);
+  } while (numberList.length < 2);
 
   return calculatesResults(numberList);
 }
 
-function calculatesResults(numbers) {
-  const firstValue = numbers[0] || 0;
-
+function calculatesResults(numberList) {
+  const firstValue = numberList[0];
   const results = {};
 
-  if (numbers.length <= 1) {
+  if (numberList.length <= 1) {
     results.square = {
       message: "The square root of selected number is",
       value: Math.sqrt(firstValue),
     };
   }
 
-  if (numbers.length > 1) {
+  if (numberList.length > 1) {
     results.sum = {
       message: "The sum amounts to",
       value: firstValue,
@@ -56,11 +65,11 @@ function calculatesResults(numbers) {
       value: firstValue,
     };
 
-    for (let i = 1; i < numbers.length; i++) {
-      results.sum.value += numbers[i];
-      results.rest.value -= numbers[i];
-      results.mult.value *= numbers[i];
-      results.div.value /= numbers[i];
+    for (let i = 1; i < numberList.length; i++) {
+      results.sum.value += numberList[i];
+      results.rest.value -= numberList[i];
+      results.mult.value *= numberList[i];
+      results.div.value /= numberList[i];
     }
   }
 
@@ -69,11 +78,9 @@ function calculatesResults(numbers) {
 
 function displayResults(results) {
   let messages = [
-    `The numbers you selected are ${numbers.length ? numbers : 0}`,
+    `The numbers you selected are ${numberList.length ? numberList : 0}`,
     `The results of the operations are the following:`,
   ];
-  const continueMessage = "Do you wish to keep adding numbers to the array?";
-  const finishMessage = "Thanks for using CalculatorPro!";
 
   Object.values(results).forEach((result) => {
     messages.push(`${result.message} ${parseFloat(result.value.toFixed(3))}`);
@@ -83,11 +90,7 @@ function displayResults(results) {
 
   alert(messages);
 
-  if (confirm(continueMessage)) {
-    return calculatorPro();
-  }
-
-  return alert(finishMessage);
+  return alert("Thanks for using Calculator!");
 }
 
-calculatorPro();
+calculator();
