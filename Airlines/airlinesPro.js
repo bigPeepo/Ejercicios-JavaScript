@@ -1,4 +1,5 @@
 //DECLARACIONES GLOBALES:
+
 const flights = [
   { id: 00, to: "New York", from: "Barcelona", cost: 700, scale: false },
   { id: 01, to: "Los Angeles", from: "Madrid", cost: 1100, scale: true },
@@ -24,18 +25,28 @@ function userWelcome() {
   alert(`Welcome to JS Airlines, ${user}.`);
 }
 
-//2. FLIGHTSHOWER
+//2. SCALE TO MESSAGE + FLIGHTSHOWER
 
-let scaleCount = 0; // declarada globalmente porque priceAverage() la llama
-function flightShower(anyFlights) {
-  let informationPannel = [];
+function scalePushMessageOrCount(anyFlights) {
+  let scaleCount = 0;
   for (let i = 0; i < anyFlights.length; i++) {
     if (anyFlights[i].scale) {
-      anyFlights[i].scaleMessage = "has a stop.\n\n"; //creamos un value:key pair con la string para enunciar si hay escala;
+      anyFlights[i].scaleMessage = "has a stop.\n\n"; // creamos un value:key pair con la string para enunciar si hay escala;
       scaleCount = scaleCount + 1;
-    } else {
+    }
+    if (!anyFlights[i].scale) {
       anyFlights[i].scaleMessage = "is a direct flight.\n\n";
     }
+  }
+  return scaleCount; // nos servirá cuando necesitamos contar cuantos vuelos con escala hay
+}
+
+function flightShower(anyFlights) {
+  scalePushMessageOrCount(anyFlights);
+
+  let informationPannel = [];
+
+  for (let i = 0; i < anyFlights.length; i++) {
     anyFlights[i].string =
       `ID ${anyFlights[i].id} from: ${anyFlights[i].from} to: ${anyFlights[i].to} has a price of ${anyFlights[i].cost}€ and `.concat(
         anyFlights[i].scaleMessage
@@ -46,13 +57,20 @@ function flightShower(anyFlights) {
 }
 
 //3. AVERAGE COST & SCALES
+
 function priceAverage() {
   let average = [];
+
   let resultSum = 0;
+
+  scaleCount = scalePushMessageOrCount(flights);
+
   for (let i = 0; i < flights.length; i++) {
-    resultSum += parseInt(flights[i].cost);
+    resultSum += Number(flights[i].cost);
   }
+
   average = resultSum / parseInt(flights.length);
+
   alert(
     `The average cost of today's ${flights.length} flights is ${average.toFixed(
       2
@@ -63,12 +81,16 @@ function priceAverage() {
 }
 
 //4. LAST 5 FLIGHTS
+
 function showLastFlights() {
   let lastFiveFlights = [];
+
   for (let i = flights.length - 1; i > flights.length - 6; i--) {
     lastFiveFlights.push(flights[i].to.concat("\n"));
   }
+
   alert("The last 5 flights of the day go to: \n" + lastFiveFlights.join(" "));
+
   alert(`We will now proceed to the Airlines Pro program, ${user}.`);
 }
 
@@ -79,29 +101,34 @@ function askCredentials() {
   let credentials = prompt(`Which kind of user are you?\nUSER or ADMIN?`);
 
   if (credentials) {
+    // so null.toLowerCase() doesn't fuck up our day
     credentials.toLowerCase();
   }
 
   while (!["user", "admin"].includes(credentials)) {
-    credentials = prompt(`Please, state your credentials. User or Admin?`)
+    credentials = prompt(`Please, state your credentials now. User or Admin?`)
       .toLowerCase()
       .trim(); // to remove the possible spaces before and after the string
   }
 
-  alert(`You chose ${credentials.toUpperCase()}.`);
+  alert(`You chose ${credentials.toUpperCase()} credentials.`);
+
   if (credentials === "user") {
     alert(
       `With user credentials, you can look up which flights are equal or lower than your maximum price.`
     );
     askPrice();
   }
+
   if (credentials === "admin") {
     alert(`With admin credentials, you can create and delete flights.`);
+
     createOrDelete();
   }
 }
 
 //6ADMIN. FLIGHT CREATION (15 max, no repetir ID, flightshow)
+
 function indexer() {
   let flightIds = [];
 
@@ -112,7 +139,19 @@ function indexer() {
   return flightIds;
 }
 
+// Validater functions to protect against null, empty string prompt shenanigans
+
+function validateString(value) {
+  return value && isNaN(Number(value));
+}
+
+function validateNumber(value) {
+  return value && !isNaN(Number(value)); // is the same that return value && !isNaN(Number(value)) ? true : false;
+}
+
 function askUntilRight(callbackTypeValidation, message) {
+  //   ( ͡° ͜ʖ ͡°)
+  // answer right or you shall not pass
   let value;
 
   do {
@@ -122,20 +161,18 @@ function askUntilRight(callbackTypeValidation, message) {
   return value;
 }
 
+let counter = 0;
 function flightFactory() {
-  let flightIds = indexer();
+  counter++;
 
-  let id = askUntilRight(validateNumber, `What is the ID of the flight?`);
-
-  if (flightIds.includes(Number(id))) {
-    alert("There's already another flight with this ID");
-    return flightFactory();
-  }
+  const flightsLength = flights.length;
+  let id = flightsLength + counter;
 
   if (flights.length > 14) {
     alert(
       "You've reached the maximum of 15 flights.\nPlease delete a flight to be able to add a new one."
     );
+
     flightDeleter();
   }
 
@@ -146,28 +183,44 @@ function flightFactory() {
   let scale = confirm(`Does this flight have a scale?`);
 
   flights.push({
-    // strings to numbers
     id: Number(id),
     to,
     from,
     cost: Number(cost),
     scale,
   });
-
   indexer();
 
   flightShower(flights);
 
   createOrDelete();
 }
-// flightFactory();
-let idDeleted;
-function deleter(idDeleted) {
+
+function deleter(id) {
+  let flightIds = indexer();
+  if (flightIds.indexOf(id) === -1) {
+    alert(`There is no flight on our database that matches ID ${id}`);
+    flightDeleter();
+  }
+  flights.splice(flightIds.indexOf(id), 1);
+
   indexer();
-  deletedFlight = flights.splice(indexId.indexOf(idDeleted), 1);
-  alert(`You deleted flight with ID number ${idDeleted}.`);
-  flightShower(flights);
-  createOrDelete();
+
+  alert(`You deleted flight with ID number ${id}.\n`);
+  if (!flights.length) {
+    alert(
+      "There aren't any flights left on our database.\nYou may create a flight next"
+    );
+    flightFactory();
+  }
+
+  if (flights.length) {
+    alert("These are the remaining flights on our database:");
+
+    flightShower(flights);
+
+    createOrDelete();
+  }
 }
 
 function flightDeleter() {
@@ -175,30 +228,46 @@ function flightDeleter() {
     "You'll have to say the ID of the flight you want to delete.\n First, take a look at the flights on the database."
   );
   flightShower(flights);
-  idDeleted = parseFloat(
-    prompt("Which flight you want to delete? ID of the flight please.")
+
+  let idDeleted = askUntilRight(
+    validateNumber,
+    `Which flight you want to delete? ID of the flight please.`
   );
-  deleter(idDeleted);
+
+  deleter(Number(idDeleted));
 }
+
 function createOrDelete() {
-  choice = prompt(
+  let choice = askUntilRight(
+    validateString,
     `Do you want to CREATE or DELETE a flight?\nType CREATE or DELETE and hit accept. You can also type EXIT to finish the program.`
-  ).toLowerCase();
+  );
+
+  choice = choice.toLowerCase();
+
   if (choice === "create") {
-    flightFactory();
+    return flightFactory();
   }
+
   if (choice === "delete") {
-    flightDeleter();
+    return flightDeleter();
   }
-  if (choice === "exit") {
-    return thanks(); //por qué repite?
-  } else {
-    createOrDelete();
+
+  if (!["create", "delete", "exit"].includes(choice)) {
+    return createOrDelete();
   }
 }
 
 //7ADMIN: DELETING FLIGHTS (indexation, flightshow)
-let userMaxPrice;
+
+function askPrice() {
+  let userMaxPrice = askUntilRight(
+    validateNumber,
+    `Please, state below which is your max price:`
+  );
+
+  flightSearcher(Number(userMaxPrice));
+}
 
 function flightSearcher(userMaxPrice) {
   let cheaperFlights = [];
@@ -208,54 +277,36 @@ function flightSearcher(userMaxPrice) {
       cheaperFlights.push(flights[i]);
     }
   }
-  flightShower(cheaperFlights);
+  if (!cheaperFlights.length) {
+    alert("There are no flights under the specified amount.");
+  }
+
+  if (cheaperFlights.length) {
+    alert(`The following flights are all up to ${userMaxPrice}€.`);
+
+    flightShower(cheaperFlights);
+  }
 
   let continueSearching = confirm(
     `Do you want to look up another price bracket now?`
   );
+
   if (continueSearching) {
     return askPrice();
   }
 
   let changeToAdmin = confirm(
-    `Do you want to change your credentials to admin or exit the program? Admin(OK) / Exit(Cancel)`
+    `Do you want to change your credentials to admin or exit the program?\nAdmin(OK) / Exit the program(Cancel)`
   );
 
   if (changeToAdmin) {
     alert(`With admin credentials, you can create and delete flights.`);
     return createOrDelete();
   }
-
-  return thanks();
-}
-
-function validateNumber(value) {
-  return value && !isNaN(Number(value)); // is the same   return value && !isNaN(Number(value)) ? true : false;
-}
-
-function askPrice() {
-  userMaxPrice = prompt(`Please, state below which is your max price:`);
-
-  const valueChecked = validateNumber(userMaxPrice);
-
-  if (!valueChecked) {
-    alert("You need to enter a number value.");
-    return askPrice();
-  }
-
-  alert(`The following flights are all up to ${userMaxPrice}€.`);
-
-  flightSearcher(userMaxPrice);
 }
 
 function thanks() {
   return alert(`Thanks for using Airlines Pro`); //porque repite?
-}
-
-// Validation function: number
-
-function validateString(value) {
-  return value && isNaN(Number(value));
 }
 
 function start() {
@@ -265,8 +316,11 @@ function start() {
   flightShower(flights);
   priceAverage();
   showLastFlights();
+  // PRO
   askCredentials();
+  thanks();
 }
 
-//start(); //<--- ***LLAMAR AQUÍ***
-flightFactory();
+start(); //<--- ***LLAMAR AQUÍ***
+
+//id automatico
