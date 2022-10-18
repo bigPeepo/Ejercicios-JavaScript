@@ -1,5 +1,3 @@
-//DECLARACIONES GLOBALES:
-
 const flights = [
   { id: 00, to: "New York", from: "Barcelona", cost: 700, scale: false },
   { id: 01, to: "Los Angeles", from: "Madrid", cost: 1100, scale: true },
@@ -13,9 +11,8 @@ const flights = [
   { id: 09, to: "Tel-Aviv", from: "Madrid", cost: 150, scale: false },
 ];
 
-//1. USER WELCOME
-
-function userWelcome() {
+let user;
+const userWelcome = () => {
   do {
     user = prompt("What is your username?");
     if (!user) {
@@ -23,26 +20,24 @@ function userWelcome() {
     }
   } while (!user);
   alert(`Welcome to JS Airlines, ${user}.`);
-}
+};
 
-//2. SCALE TO MESSAGE + FLIGHTSHOWER
-
-function scalePushMessageOrCount(anyFlights) {
+const scaleMessageAndCount = (anyFlights) => {
   let scaleCount = 0;
   for (let i = 0; i < anyFlights.length; i++) {
     if (anyFlights[i].scale) {
-      anyFlights[i].scaleMessage = "has a stop.\n\n"; // creamos un value:key pair con la string para enunciar si hay escala;
+      anyFlights[i].scaleMessage = "has a stop.\n\n";
       scaleCount = scaleCount + 1;
     }
     if (!anyFlights[i].scale) {
       anyFlights[i].scaleMessage = "is a direct flight.\n\n";
     }
   }
-  return scaleCount; // nos servirá cuando necesitamos contar cuantos vuelos con escala hay
-}
+  return scaleCount;
+};
 
-function flightShower(anyFlights) {
-  scalePushMessageOrCount(anyFlights);
+const flightShower = (anyFlights) => {
+  scaleMessageAndCount(anyFlights);
 
   let informationPannel = [];
 
@@ -54,16 +49,14 @@ function flightShower(anyFlights) {
     informationPannel.push(anyFlights[i].string);
   }
   alert(informationPannel.join(" "));
-}
+};
 
-//3. AVERAGE COST & SCALES
-
-function priceAverage() {
+const priceAverage = () => {
   let average = [];
 
   let resultSum = 0;
 
-  scaleCount = scalePushMessageOrCount(flights);
+  scaleCount = scaleMessageAndCount(flights);
 
   for (let i = 0; i < flights.length; i++) {
     resultSum += Number(flights[i].cost);
@@ -78,11 +71,9 @@ function priceAverage() {
       flights.length
     } flights, ${scaleCount} of them have a stop.`
   );
-}
+};
 
-//4. LAST 5 FLIGHTS
-
-function showLastFlights() {
+const showLastFlights = () => {
   let lastFiveFlights = [];
 
   for (let i = flights.length - 1; i > flights.length - 6; i--) {
@@ -92,23 +83,19 @@ function showLastFlights() {
   alert("The last 5 flights of the day go to: \n" + lastFiveFlights.join(" "));
 
   alert(`We will now proceed to the Airlines Pro program, ${user}.`);
-}
+};
 
-//PRO:
-//5. ADMIN vs USER
-
-function askCredentials() {
+const askCredentials = () => {
   let credentials = prompt(`Which kind of user are you?\nUSER or ADMIN?`);
 
   if (credentials) {
-    // so null.toLowerCase() doesn't fuck up our day
     credentials.toLowerCase();
   }
 
   while (!["user", "admin"].includes(credentials)) {
     credentials = prompt(`Please, state your credentials now. User or Admin?`)
       .toLowerCase()
-      .trim(); // to remove the possible spaces before and after the string
+      .trim();
   }
 
   alert(`You chose ${credentials.toUpperCase()} credentials.`);
@@ -117,19 +104,17 @@ function askCredentials() {
     alert(
       `With user credentials, you can look up which flights are equal or lower than your maximum price.`
     );
-    askPrice();
+    return askPrice();
   }
 
   if (credentials === "admin") {
     alert(`With admin credentials, you can create and delete flights.`);
 
-    createOrDelete();
+    return createOrDelete();
   }
-}
+};
 
-//6ADMIN. FLIGHT CREATION (15 max, no repetir ID, flightshow)
-
-function indexer() {
+const indexer = () => {
   let flightIds = [];
 
   for (i = 0; i < flights.length; i++) {
@@ -137,21 +122,13 @@ function indexer() {
   }
 
   return flightIds;
-}
+};
 
-// Validater functions to protect against null, empty string prompt shenanigans
+const validateString = (value) => value && isNaN(Number(value));
 
-function validateString(value) {
-  return value && isNaN(Number(value));
-}
+const validateNumber = (value) => value && !isNaN(Number(value));
 
-function validateNumber(value) {
-  return value && !isNaN(Number(value)); // is the same that return value && !isNaN(Number(value)) ? true : false;
-}
-
-function askUntilRight(callbackTypeValidation, message) {
-  //   ( ͡° ͜ʖ ͡°)
-  // answer right or you shall not pass
+const askUntilRight = (callbackTypeValidation, message) => {
   let value;
 
   do {
@@ -159,14 +136,15 @@ function askUntilRight(callbackTypeValidation, message) {
   } while (!callbackTypeValidation(value));
 
   return value;
-}
+};
 
 let counter = 0;
-function flightFactory() {
+const flightsLength = flights.length;
+
+const flightFactory = () => {
   counter++;
 
-  const flightsLength = flights.length;
-  let id = flightsLength + counter;
+  let id = flightsLength - 1 + counter;
 
   if (flights.length > 14) {
     alert(
@@ -177,10 +155,14 @@ function flightFactory() {
   }
 
   let to = askUntilRight(validateString, `Where is the flight going to?`);
+
   let from = askUntilRight(validateString, `Where is the flight leaving from?`);
+
   let cost = askUntilRight(validateNumber, `What is the price in €?`);
 
-  let scale = confirm(`Does this flight have a scale?`);
+  let scale = confirm(
+    `Does this flight have a stop?\nCancel is no, OK is yes.`
+  );
 
   flights.push({
     id: Number(id),
@@ -194,10 +176,11 @@ function flightFactory() {
   flightShower(flights);
 
   createOrDelete();
-}
+};
 
-function deleter(id) {
+const deleter = (id) => {
   let flightIds = indexer();
+
   if (flightIds.indexOf(id) === -1) {
     alert(`There is no flight on our database that matches ID ${id}`);
     flightDeleter();
@@ -221,11 +204,11 @@ function deleter(id) {
 
     createOrDelete();
   }
-}
+};
 
-function flightDeleter() {
+const flightDeleter = () => {
   alert(
-    "You'll have to say the ID of the flight you want to delete.\n First, take a look at the flights on the database."
+    "You'll have to write the ID of the flight you want to delete.\n First, take a look at the flights on the database."
   );
   flightShower(flights);
 
@@ -235,12 +218,12 @@ function flightDeleter() {
   );
 
   deleter(Number(idDeleted));
-}
+};
 
-function createOrDelete() {
+const createOrDelete = () => {
   let choice = askUntilRight(
     validateString,
-    `Do you want to CREATE or DELETE a flight?\nType CREATE or DELETE and hit accept. You can also type EXIT to finish the program.`
+    `Do you want to CREATE or DELETE a flight?\nType CREATE or DELETE and hit accept. You can also type USER to get user credentials, or EXIT to finish the program.`
   );
 
   choice = choice.toLowerCase();
@@ -253,23 +236,32 @@ function createOrDelete() {
     return flightDeleter();
   }
 
-  if (!["create", "delete", "exit"].includes(choice)) {
+  if (choice === "user") {
+    alert(
+      `With user credentials, you can look up which flights are equal or lower than your maximum price.`
+    );
+    return askPrice();
+  }
+
+  if (choice === "exit") {
+    return;
+  }
+
+  if (!["create", "delete", "exit", "user"].includes(choice)) {
     return createOrDelete();
   }
-}
+};
 
-//7ADMIN: DELETING FLIGHTS (indexation, flightshow)
-
-function askPrice() {
+const askPrice = () => {
   let userMaxPrice = askUntilRight(
     validateNumber,
     `Please, state below which is your max price:`
   );
 
   flightSearcher(Number(userMaxPrice));
-}
+};
 
-function flightSearcher(userMaxPrice) {
+const flightSearcher = (userMaxPrice) => {
   let cheaperFlights = [];
 
   for (let i = 0; i < flights.length; i++) {
@@ -303,24 +295,18 @@ function flightSearcher(userMaxPrice) {
     alert(`With admin credentials, you can create and delete flights.`);
     return createOrDelete();
   }
-}
+};
 
-function thanks() {
-  return alert(`Thanks for using Airlines Pro`); //porque repite?
-}
+const thanks = () => alert(`Thanks for using Airlines Pro`);
 
 function start() {
-  //  AIRLINES
   userWelcome();
   alert(`The following flights are available today:`);
   flightShower(flights);
   priceAverage();
   showLastFlights();
-  // PRO
   askCredentials();
   thanks();
 }
 
-start(); //<--- ***LLAMAR AQUÍ***
-
-//id automatico
+start();
