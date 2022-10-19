@@ -1,8 +1,4 @@
-//BINGO PRO
-
-//1.USERNAME (RETURN)
-
-function username() {
+const username = () => {
   do {
     user = prompt("What is your username?");
     if (!user) {
@@ -11,24 +7,20 @@ function username() {
   } while (!user);
 
   return username;
-}
+};
 
-// 1B: Explainer
-
-function introduction() {
+const introduction = () => {
   alert(
-    `Welcome to JS Bingo PRO, ${user}.\nYou will need to open the console viewer to play this game.\nPress OK to be assigned a bingo card!`
+    `Welcome to JS Bingo PRO, ${user}.\n\nYou will need to open the console viewer to play this game.\n\nPress OK to be assigned a bingo card!`
   );
-}
+};
 
-function introduction2() {
+const introduction2 = () => {
   alert(`The game is about to start, ${user}.\n
       Press OK to draft your first number!`);
-}
+};
 
-//2.BINGO CARD + displayer INCLUDE A FORMATTER
-
-function randomNumbersGenerator() {
+const randomNumbersGenerator = () => {
   numberMinimum = 1;
   numberMaximum = 50;
 
@@ -37,10 +29,20 @@ function randomNumbersGenerator() {
   );
 
   return randomNumber;
-}
+};
 
 let bingoCard = [];
-function generateBingoCard() {
+const generateBingoCard = () => {
+  finished = false;
+  unhappyAboutBingoCard = true;
+  pickedNumbersArray = [];
+  bingoCard = [];
+  line1 = false;
+  line2 = false;
+  line3 = false;
+  counter = 0;
+  score = 0;
+
   if (bingoCard) {
     bingoCard = [];
   }
@@ -54,16 +56,14 @@ function generateBingoCard() {
     return a - b;
   });
   return bingoCardDisplayer();
-}
+};
 
-function pad(num) {
-  // to add a 0 to num < 10
+const pad = (num) => {
   return (num < 10 ? "0" : "") + num;
-}
+};
 
 let unhappyAboutBingoCard = true;
-
-function bingoCardDisplayer() {
+const bingoCardDisplayer = () => {
   console.clear();
   console.log("            ________________________________");
   console.log("          |   B  I  N  G  O     C  A  R  D   |");
@@ -85,35 +85,33 @@ function bingoCardDisplayer() {
     )}     ${pad(bingoCard[13])}     ${pad(bingoCard[14])}  |`
   );
   console.log("          |__________________________________|");
+  console.log(`\n\nYour current Score is ${score} points.`);
   if (unhappyAboutBingoCard) {
     changeBingoCard();
   }
-}
+};
 
-function changeBingoCard() {
+const changeBingoCard = () => {
   if (
     !confirm(
-      "This is your bingo card!!\nDo you like it or would you like to change it?\n\nPress Cancel to change it, and OK to keep it and start the game."
+      "This is your bingo card!!\n\nDo you like it or would you like to change it?\n\nPress Cancel to change it, and OK to keep it and start the game."
     )
   ) {
     return generateBingoCard();
   } else {
     unhappyAboutBingoCard = false;
   }
-}
+};
 
-let pickedNumbersArray = []; // to keep track of the numbers already drafted
-
-function numbersPicked(randomNumber) {
+let pickedNumbersArray = [];
+const numbersPicked = (randomNumber) => {
   pickedNumbersArray.push(randomNumber);
   pickedNumbersArray.sort(function (a, b) {
     return a - b;
   });
-}
+};
 
-//3.GENERATE NUMBERS
-
-function lotteryWheel() {
+const lotteryWheel = () => {
   if (pickedNumbersArray.length) {
     alert("Press OK to draft a new number now.");
   }
@@ -129,25 +127,23 @@ function lotteryWheel() {
   );
 
   return matchOrNot(randomNumber, bingoCard);
-}
+};
 
-//4.MATCH
-function matchOrNot(num, bingoCard) {
+const matchOrNot = (num, bingoCard) => {
   if (bingoCard.includes(num)) {
     alert(`Good!\nNumber ${num} will now be crossed out of your card!`);
     bingoCard.splice(bingoCard.indexOf(num), 1, "❌");
     bingoCardDisplayer();
     checkForLine();
   }
-}
+};
 
-//6.LÍNEA!
 let finished = false;
 let line1 = false;
 let line2 = false;
 let line3 = false;
 
-function checkForLine() {
+const checkForLine = () => {
   if (
     bingoCard[0] === "❌" &&
     bingoCard[1] === "❌" &&
@@ -181,66 +177,70 @@ function checkForLine() {
     line3 = true;
     lineOrBingo();
   }
-}
+};
 
-/* function checkForLine() {
-  for(let i=0;i<15;i+5){
-    if (i === x || y) {
-      continue
-    }
-   if(
-    bingoCard[i] === "❌" &&
-    bingoCard[i+1] === "❌" &&
-    bingoCard[i+2] === "❌" &&
-    bingoCard[i+3] === "❌" &&
-    bingoCard[i+4] === "❌" &&
-    x !== i &&
-    y !==
-  ) {
-    if(!x) {
-      x = i
-    }
-    if(x) {
-      y = i
-    }
-    return lineOrBingo();
-} */
+const line = () => alert(`Congratulations, ${user}!\n\nYou called LINE!`);
 
-function line() {
-  return alert(`Congratulations, ${user}!\nYou called LINE!`);
-}
-
-function bingo() {
+const bingo = () => {
+  let scoreboardPannel = [];
   finished = true;
-  alert(`Congratulations, ${user}!\nYou called BINGO!!!!`);
-  return thanks();
-}
+  alert(
+    `Congratulations, ${user}!\n\nYOU CALLED BINGO!!!!\n\nYour Total SCORE is ${score} points.`
+  );
+  if (scoreboard.length > 1) {
+    alert(`These are the SCORES you obtained:`);
+    for (let i = 0; i < scoreboard.length; i++) {
+      scoreboardPannel.push(
+        `Round ${i + 1} Total Score: ${scoreboard[i]} points.\n`
+      );
+    }
+    alert(scoreboardPannel.join(" "));
+  }
+  return replay();
+};
 
 counter = 0;
-function lineOrBingo() {
+const lineOrBingo = () => {
   counter++;
+  scoreCounter();
   if (counter === 3) {
+    scoreboard.push(score);
     return bingo();
   } else {
     return line();
   }
-}
-//7.THANKS
+};
 
-function thanks() {
+let score = 0;
+let scoreboard = [];
+const scoreCounter = () => {
+  score = Math.round(score + (counter * 10000) / pickedNumbersArray.length);
+  bingoCardDisplayer();
+};
+
+const thanks = () => {
   alert(`Thanks for playing JS Bingo, ${user}.\nHAVE A NICE DAY!`);
-}
+};
 
-//8 FLOW
+const replay = () => {
+  if (confirm(`Would you like to play another round, ${user}?`)) {
+    return gameFlow();
+  }
+  return thanks();
+};
 
-function start() {
-  username();
-  introduction();
+const gameFlow = () => {
   generateBingoCard();
   introduction2();
   do {
     lotteryWheel();
   } while (!finished);
-}
+};
+
+const start = () => {
+  username();
+  introduction();
+  gameFlow();
+};
 
 start();

@@ -105,6 +105,7 @@ const askCredentials = () => {
     alert(
       `With user credentials, you can look up which flights are equal or lower than your maximum price.`
     );
+    s;
     return askPrice();
   }
 
