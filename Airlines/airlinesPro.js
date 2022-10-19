@@ -89,13 +89,14 @@ const askCredentials = () => {
   let credentials = prompt(`Which kind of user are you?\nUSER or ADMIN?`);
 
   if (credentials) {
-    credentials.toLowerCase();
+    credentials.toLowerCase().trim();
   }
 
   while (!["user", "admin"].includes(credentials)) {
-    credentials = prompt(`Please, state your credentials now. User or Admin?`)
-      .toLowerCase()
-      .trim();
+    credentials = prompt(`Please, state your credentials now. User or Admin?`);
+    if (credentials) {
+      credentials.toLowerCase().trim();
+    }
   }
 
   alert(`You chose ${credentials.toUpperCase()} credentials.`);
