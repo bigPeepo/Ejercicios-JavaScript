@@ -52,8 +52,8 @@ const start = (number, number2, mult) => {
 };
 
 start(number, number2, 2); */
-/* 
-const dictionary = {
+
+/* const dictionary = {
   0: ["A", "K", "T", "F", "O", "Y"],
   1: ["B", "L", "U", "G", "P", "Z"],
   2: ["C", "M", "V", "H", "Q", "."],
@@ -85,9 +85,8 @@ const textInto4DigitStrings = (...arg) => {
   return numbersOutOfText;
 };
 
-console.log(stringIntoNumbers("Hola"));
-console.log(textInto4DigitStrings("HI  ", "WE  ", "NEED", "HELP"));
- 
+//console.log(stringIntoNumbers("Hola"));
+console.log(textInto4DigitStrings("HI  ", "WE  ", "NEED", "HELP")); */
 
 /* const toEncrypt = "CODERS";
 
@@ -187,41 +186,43 @@ const translator = (num) => {
 console.log(translator(55)); 
  */
 
-/* const lorem =
+const lorem =
   "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur.";
+
+const replacement1 = [",", ""];
+const replacement2 = [".", ","];
+const replacement3 = ["dolor", "potato"];
+const replacement4 = ["lorem", "tomato"];
+const replacement5 = ["labor", "cucumber"];
+const replacement6 = ["consequatur", "garlic"];
+const replacement7 = ["ipsum", "onion"];
+const replacements = [
+  replacement1,
+  replacement2,
+  replacement3,
+  replacement4,
+  replacement5,
+  replacement6,
+  replacement7,
+];
 
 let replacedText = lorem;
 
 const replacer = (text, [arg, newWord]) => {
-  do {
-    replacedText = replacedText.replace(arg, newWord);
-  } while (replacedText.includes(arg));
-  return replacedText;
+  replacedText = text.replaceAll(arg, newWord);
 };
 
-replacement1 = [",", ""];
-replacement2 = [".", ","];
-replacement3 = ["dolor", "potato"];
-replacement4 = ["lorem", "tomato"];
-replacement5 = ["labor", "cucumber"];
-replacement6 = ["consequatur", "garlic"];
-replacement7 = ["ipsum", "onion"];
-
-const massReplacer = (replacedText, ...arg) => {
-  replacer(replacedText, arg);
-  console.log(replacedText);
+const massReplacer = () => {
+  for (let index = 0; index < replacements.length; index++) {
+    replacer(replacedText, replacements[index]);
+  }
 };
 
-replacer(replacedText, replacement1);
-replacer(replacedText, replacement2);
-replacer(replacedText, replacement3);
-replacer(replacedText, replacement4);
-replacer(replacedText, replacement5);
-replacer(replacedText, replacement6);
-replacer(replacedText, replacement7);
-console.log(replacedText); */
+massReplacer();
 
-const textSample = "Lorem onion potato";
+console.log(replacedText);
+
+/* const textSample = "Lorem onion potato";
 
 const caseChecker = (text, wordToReplace, newWord) => {
   let wordHelper = "";
@@ -234,3 +235,4 @@ const caseChecker = (text, wordToReplace, newWord) => {
 let value = "Onion";
 debugger;
 caseChecker(textSample, "onion", value);
+ */
