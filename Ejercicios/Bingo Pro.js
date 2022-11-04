@@ -1,13 +1,6 @@
-const username = () => {
-  do {
-    user = prompt("What is your username?");
-    if (!user) {
-      alert(`You need to pick a username.`);
-    }
-  } while (!user);
+import { username } from "../username.js";
 
-  return username;
-};
+let user;
 
 const introduction = () => {
   alert(
@@ -20,9 +13,11 @@ const introduction2 = () => {
       Press OK to draft your first number!`);
 };
 
+let randomNumber;
+
 const randomNumbersGenerator = () => {
-  numberMinimum = 1;
-  numberMaximum = 50;
+  const numberMinimum = 1;
+  const numberMaximum = 50;
 
   randomNumber = Math.round(
     Math.random() * (numberMaximum - numberMinimum) + numberMinimum
@@ -199,7 +194,7 @@ const bingo = () => {
   return replay();
 };
 
-counter = 0;
+let counter = 0;
 const lineOrBingo = () => {
   counter++;
   scoreCounter();
@@ -238,7 +233,7 @@ const gameFlow = () => {
 };
 
 const start = () => {
-  username();
+  user = username();
   introduction();
   gameFlow();
 };
