@@ -190,6 +190,7 @@ const bingo = () => {
 const lineOrBingo = () => {
   counter++;
   scoreCounter();
+
   if (counter === 3) {
     scoreboard.push(score);
     return bingo();
@@ -200,6 +201,7 @@ const lineOrBingo = () => {
 
 const scoreCounter = () => {
   score = Math.round(score + (counter * 10000) / pickedNumbersArray.length);
+
   bingoCardDisplayer();
 };
 
@@ -211,6 +213,7 @@ const replay = () => {
   if (confirm(`Would you like to play another round, ${user}?`)) {
     return gameFlow();
   }
+
   return thanks();
 };
 
