@@ -541,9 +541,10 @@ const questions3 = [
   },
 ];
 
+let currentQuestionDatabase = questions;
+
 let NUMBER_OF_QUESTION_DATABASES = 3;
 
-let randomNumber;
 const randomNumberGenerator = () => {
   const numberMinimum = 1;
   const numberMaximum = NUMBER_OF_QUESTION_DATABASES;
@@ -567,11 +568,9 @@ const questionDatabaseSwitcher = (gameCounter) => {
       return questions;
       break;
     default:
-      return questionDatabaseSwitcher(randomNumberGenerator());
+      questionDatabaseSwitcher(randomNumberGenerator);
   }
 };
-
-let currentQuestionDatabase = questionDatabaseSwitcher();
 
 let turnCounter = 0;
 
@@ -581,7 +580,7 @@ let gameCounter = 1;
 
 let user;
 const username = () => {
-  if (!user || user === "") {
+  if (!user) {
     do {
       user = prompt("What is your username?");
       if (!user) {
@@ -618,6 +617,7 @@ const skipToNextLetterUnanswered = () => {
   turnAdd1();
 
   if (answeredQuestionsCounter() > 25) {
+    //check this
     return endGame();
   }
 
@@ -683,11 +683,16 @@ const resetTimer = () => {
   intervalId;
   secs = 0;
   startTimer();
+  updateTime();
 };
 
 let answer = "";
 
 const questionPrompt = () => {
+  if (paused) {
+    startTimer();
+  }
+
   answer = prompt(getQuestionFromCounter(turnCounter)).toLowerCase().trim();
 
   return answer;
@@ -721,8 +726,6 @@ const isAnswerRightOrWrong = () => {
   }
 
   if (answer === "pasapalabra") {
-    //or empty string
-
     return;
   }
 
@@ -858,20 +861,18 @@ const refreshTurnInObject = () => {
 };
 
 const dataDisplay = () => {
-  if (paused) {
-    startTimer();
-  }
-
   console.clear();
-  updateTime();
+
   console.log("Time remaining: " + secs + " seconds.");
 
   console.table(objectToEncapsulateSolutionsWrongAnswersAndTurn);
 };
 
-let objectToEncapsulateRankingMetrics = {};
+let objectToEncapsulateRankingMetrics = {
+  1: { username: "", correctAnswers: "", secondsLeft: "" },
+};
 
-/* const recordScore = () => {
+const recordScore = () => {
   objectToEncapsulateRankingMetrics[gameCounter].username = username();
 
   objectToEncapsulateRankingMetrics[gameCounter].correctAnswers =
@@ -882,21 +883,6 @@ let objectToEncapsulateRankingMetrics = {};
   } else {
     objectToEncapsulateRankingMetrics[gameCounter].secondsLeft = secs;
   }
-}; */
-
-const recordScore = () => {
-  function EntryForObjectToEncapsulateRankingMetrics() {
-    this.username = username();
-    this.correctAnswers = correctAnswers;
-    if (secs < 0) {
-      this.secondsLeft = 0;
-    } else {
-      this.secondsLeft = secs;
-    }
-  }
-
-  objectToEncapsulateRankingMetrics[gameCounter] =
-    new EntryForObjectToEncapsulateRankingMetrics(); //aqui?
 };
 
 const displayRanking = () => {
@@ -905,14 +891,16 @@ const displayRanking = () => {
   let informationPannel = [];
 
   for (
-    let i = 1;
-    i < Object.values(objectToEncapsulateRankingMetrics).length + 1;
+    let i = 0;
+    i < Object.values(objectToEncapsulateRankingMetrics).length;
     i++
   ) {
     objectToEncapsulateRankingMetrics[
-      i
-    ].string = `${objectToEncapsulateRankingMetrics[i].username} answered ${objectToEncapsulateRankingMetrics[i].correctAnswers} answers correctly. ${objectToEncapsulateRankingMetrics[i].username} finished the game with ${objectToEncapsulateRankingMetrics[i].secondsLeft} seconds left.\n`;
-    informationPannel.push(objectToEncapsulateRankingMetrics[i].string);
+      gameCounter
+    ].string = `${objectToEncapsulateRankingMetrics[gameCounter].username} answered ${objectToEncapsulateRankingMetrics[gameCounter].correctAnswers} answers correctly. They finished the game with ${objectToEncapsulateRankingMetrics[gameCounter].secondsLeft} seconds left.\n`;
+    informationPannel.push(
+      objectToEncapsulateRankingMetrics[gameCounter].string
+    );
   }
   return alert(informationPannel.join(" "));
 };
@@ -950,22 +938,26 @@ const playAnotherRound = () => {
   if (confirm("Do you want to play a second round?")) {
     gameCounter++;
 
-    clearStatus();
+    resetVariablesForNewGame();
 
     username();
+
+    resetTimer();
 
     return gameFlow();
   } else endGame();
 };
 
-const clearStatus = () => {
+const resetVariablesForNewGame = () => {
   stillPlaying = true;
 
-  user = "";
+  user;
 
   turnCounter = 0;
 
   correctAnswers = 0;
+
+  gameCounter = 1;
 
   startTime = 0;
   elapsedTime = 0;
@@ -1003,8 +995,6 @@ const clearStatus = () => {
     y: {},
     z: {},
   };
-
-  resetTimer();
 };
 
 const gameFlow = () => {
@@ -1017,25 +1007,26 @@ const gameFlow = () => {
     gameStillGoingOrNot();
     skipToNextLetterUnanswered();
   } while (stillPlaying);
-  playAnotherRound();
 };
 
+startTimer();
+updateTime();
 const startGame = () => {
   username();
   gameFlow();
+  playAnotherRound();
 };
 
 startGame();
 
 /* To do list:
-  
-  Order rankings
-  Delete Example when game begins 
-  change 26s 25s for object.value lengths
-  Add how long it took for each question
-  Make the console.table be seen all the time
-  Add username, introduction, thank you functions
-  Change the questions with second round
-  Deal with cancelar
-  
-   */
+
+Order rankings
+Delete Example when game begins 
+change 26s 25s for object.value lengths
+Add how long it took for each question
+Make the console.table be seen all the time
+Add username, introduction, thank you functions
+Change the questions with second round
+
+ */

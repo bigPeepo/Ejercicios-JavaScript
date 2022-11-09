@@ -30,3 +30,14 @@ const askUntilRight = (callbackTypeValidation, message) => {
 export { username, WELCOME, validateNumber, validateString, askUntilRight };
 
 // import { username } from "../utils.js";
+
+const randomNumberGenerator = () => {
+  const numberMinimum = 1;
+  const numberMaximum = 3;
+
+  randomNumber = Math.round(
+    Math.random() * (numberMaximum - numberMinimum) + numberMinimum
+  );
+
+  return randomNumber;
+};

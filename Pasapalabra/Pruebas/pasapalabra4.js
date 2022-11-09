@@ -541,57 +541,11 @@ const questions3 = [
   },
 ];
 
-let NUMBER_OF_QUESTION_DATABASES = 3;
+//random questions. Bad thought out. JUst first round questions, then questions2, then questions3
+let currentQuestionDatabase = questions;
 
-let randomNumber;
-const randomNumberGenerator = () => {
-  const numberMinimum = 1;
-  const numberMaximum = NUMBER_OF_QUESTION_DATABASES;
-
-  randomNumber = Math.round(
-    Math.random() * (numberMaximum - numberMinimum) + numberMinimum
-  );
-
-  return randomNumber;
-};
-
-const questionDatabaseSwitcher = (gameCounter) => {
-  switch (gameCounter) {
-    case 1:
-      return questions;
-      break;
-    case 2:
-      return questions2;
-      break;
-    case 3:
-      return questions;
-      break;
-    default:
-      return questionDatabaseSwitcher(randomNumberGenerator());
-  }
-};
-
-let currentQuestionDatabase = questionDatabaseSwitcher();
-
+//turn system
 let turnCounter = 0;
-
-let correctAnswers = 0;
-
-let gameCounter = 1;
-
-let user;
-const username = () => {
-  if (!user || user === "") {
-    do {
-      user = prompt("What is your username?");
-      if (!user) {
-        alert(`You need to pick a username.`);
-      }
-    } while (!user);
-  }
-
-  return user;
-};
 
 const turnAdd1 = () => {
   turnCounter++;
@@ -602,37 +556,19 @@ const turnAdd1 = () => {
   return turnCounter;
 };
 
-const answeredQuestionsCounter = () => {
-  let answerCounter = 0;
-
-  for (let i = 0; i < 26; i++) {
-    if (currentQuestionDatabase[i].status) {
-      answerCounter++;
-    }
-  }
-
-  return answerCounter;
-};
-
 const skipToNextLetterUnanswered = () => {
-  turnAdd1();
-
-  if (answeredQuestionsCounter() > 25) {
-    return endGame();
-  }
-
   do {
-    if (!currentQuestionDatabase[turnCounter].status) {
+    if (currentQuestionDatabase[turnCounter].status) {
       return turnCounter;
     }
     turnAdd1();
-  } while (currentQuestionDatabase[turnCounter].status);
+  } while (!currentQuestionDatabase[turnCounter].status);
 
   return turnCounter;
 };
 
-let SECONDS_ASSIGNED = 140;
-let timeAssigned = SECONDS_ASSIGNED * 1000;
+//time system
+
 let startTime = 0;
 let elapsedTime = 0;
 let currentTime = 0;
@@ -651,9 +587,6 @@ const startTimer = () => {
 };
 
 const pauseTimer = () => {
-  console.clear();
-  console.log("Time is paused");
-
   paused = true;
 
   elapsedTime = Date.now() - startTime;
@@ -662,33 +595,23 @@ const pauseTimer = () => {
 };
 
 const time0padding = (num) => {
-  return (num < 10 && num > 0 ? "0" : "") + num;
+  return (num < 10 ? "0" : "") + num;
 };
 
 function updateTime() {
-  elapsedTime = timeAssigned - (Date.now() - startTime);
+  elapsedTime = Date.now() - startTime;
 
-  secs = Math.floor(elapsedTime / 1000);
+  secs = Math.floor((elapsedTime / 1000) % 60);
 
   secs = time0padding(secs);
+
+  console.log(secs);
 }
 
-const resetTimer = () => {
-  SECONDS_ASSIGNED = 140;
-  timeAssigned = SECONDS_ASSIGNED * 1000;
-  startTime = 0;
-  elapsedTime = 0;
-  currentTime = 0;
-  paused = true;
-  intervalId;
-  secs = 0;
-  startTimer();
-};
-
+//Questioning & answering
 let answer = "";
-
 const questionPrompt = () => {
-  answer = prompt(getQuestionFromCounter(turnCounter)).toLowerCase().trim();
+  answer = prompt(getQuestionsFromCounter(turnCounter).toLowerCase().trim());
 
   return answer;
 };
@@ -697,70 +620,150 @@ const markLetterAsAnswered = () => {
   if (answer === "pasapalabra") {
     return;
   }
-  questions[turnCounter].status = 1;
+  return (questions[turnCounter].status = 1);
 };
+
+const answerChecker = () => {
+  if (answer === "end") {
+    pauseTimer();
+    end();
+  }
+
+  if (answer === "pasapalabra") {
+    //pausa el tiempo
+    pauseTimer(); // to be ellaborated
+    alert("oi! time is paused!");
+  }
+
+  if (getSolutionsFromCounter(turnCounter) === answer) {
+    return displaySolution(true);
+  }
+
+  if (getSolutionsFromCounter(turnCounter) !== answer) {
+    return displaySolution(false);
+  }
+};
+
+const displaySolution = (boolean) => {
+  //pausa el tiempo
+  if (boolean) {
+    alert(
+      `Correct!\n\nThe answer is "${getSolutionsFromCounter(turnCounter)}".`
+    );
+    /* return entriesForDisplayConstructor(
+      getLetterFromCounter(turnCounter),
+      turnCounter,
+      turnCounter
+    ); */
+    return giveSolutionAndMaybeKeepWrongAnswerToo(true);
+  }
+  if (!boolean) {
+    alert(
+      `That is wrong... The answer we were looking for is "${getSolutionsFromCounter(
+        turnCounter
+      )}".`
+    );
+    /*  return entriesForDisplayConstructor(
+      getLetterFromCounter(turnCounter),
+      turnCounter,
+      turnCounter,
+      answer
+    ); */
+    return giveSolutionAndMaybeKeepWrongAnswerToo(false);
+  }
+};
+
+// indexers
 
 const getLetterFromCounter = (turnCounter) => {
   return Object.values(currentQuestionDatabase[turnCounter])[0];
 };
 
-const getSolutionFromCounter = (turnCounter) => {
-  //do I need to call parameter?
+const getSolutionsFromCounter = (turnCounter) => {
   return Object.values(currentQuestionDatabase[turnCounter])[1];
 };
 
-const getQuestionFromCounter = () => {
+const getQuestionsFromCounter = () => {
   return Object.values(currentQuestionDatabase[turnCounter])[3];
 };
 
-const isAnswerRightOrWrong = () => {
-  gameStillGoingOrNot();
+//ending the game
 
-  if (answer === "end") {
-    return endGame();
-  }
+let stillPlaying = true;
 
-  if (answer === "pasapalabra") {
-    //or empty string
-
-    return;
-  }
-
-  if (getSolutionFromCounter(turnCounter) === answer && stillPlaying) {
-    correctAnswers++;
-
-    return alertSolution(true);
-  }
-
-  if (getSolutionFromCounter(turnCounter) !== answer && stillPlaying) {
-    return alertSolution(false);
-  }
+const end = () => {
+  return (stillPlaying = false);
 };
 
-const alertSolution = (boolean) => {
-  if (boolean) {
-    alert(
-      `Correct!\n\nThe answer is "${getSolutionFromCounter(turnCounter)}".`
-    );
-
-    storeSolutionInObject();
+const checkIfAllResponsesAreGiven = () => {
+  for (let i = 0; i > questions.length; i++) {
+    let counter;
+    if (currentQuestionDatabase[i]) {
+      ++counter;
+    }
+    if (counter === 26) {
+      return (stillPlaying = false);
+    }
   }
-
-  if (!boolean) {
-    pauseTimer();
-
-    alert(
-      `That is wrong... The answer we were looking for is "${getSolutionFromCounter(
-        turnCounter
-      )}".`
-    );
-
-    storeSolutionInObject();
-    storeWrongAnswerInObject();
-  }
+  return false; // or empty return
 };
 
-const strikethroughLetterEquivalence = {
+//starting the functions
+
+const username = () => {
+  let user;
+
+  do {
+    user = prompt("What is your username?");
+    if (!user) {
+      alert(`You need to pick a username.`);
+    }
+  } while (!user);
+
+  return user;
+};
+
+const introduction = () => {
+  alert(
+    `Welcome to JS Pasapalabra, ${username()}.\n\nYou will need to open the console viewer to play this game.`
+  );
+};
+
+const thanks = () => {
+  alert(`Thanks for playing JS Pasapalabra, ${username()}.\nHAVE A NICE DAY!`);
+};
+
+const gameFlow = () => {
+  do {
+    displayRosco();
+    console.log("1");
+    questionPrompt(); // can END
+    console.log("2");
+
+    answerChecker();
+    console.log("3");
+
+    markLetterAsAnswered();
+
+    console.log("4");
+
+    checkIfAllResponsesAreGiven();
+    console.log("5");
+
+    skipToNextLetterUnanswered();
+    console.log("6");
+  } while (stillPlaying);
+};
+
+const start = () => {
+  //introduction();
+  startTimer();
+  gameFlow();
+  ranking(); // if end > not ranked
+  thanks();
+};
+
+const strikethroughObject = {
   a: "a̴",
   b: "b̴",
   c: "c̴",
@@ -792,250 +795,66 @@ const strikethroughLetterEquivalence = {
 const strikethroughThisString = (targetWord) => {
   let strikedthroughConcat = "";
   for (let i = 0; i < targetWord.length; i++) {
-    strikedthroughConcat += strikethroughLetterEquivalence[targetWord[i]];
+    strikedthroughConcat += strikethroughObject[targetWord[i]];
   }
 
   return strikedthroughConcat;
 };
 
-let objectToEncapsulateSolutionsWrongAnswersAndTurn = {
-  example: { solution: "pasapalabra", wrongAnswer: "p̴a̴s̴a̴l̴a̴c̴a̴b̴r̴a̴" },
-  a: {},
-  b: {},
-  c: {},
-  d: {},
-  e: {},
-  f: {},
-  g: {},
-  h: {},
-  i: {},
-  j: {},
-  k: {},
-  l: {},
-  m: {},
-  n: {},
-  o: {},
-  p: {},
-  q: {},
-  r: {},
-  s: {},
-  t: {},
-  u: {},
-  v: {},
-  w: {},
-  x: {},
-  y: {},
-  z: {},
-};
-
-const storeSolutionInObject = () => {
-  objectToEncapsulateSolutionsWrongAnswersAndTurn[
-    getLetterFromCounter(turnCounter)
-  ].solution = getSolutionFromCounter(turnCounter);
-};
-
-const storeWrongAnswerInObject = () => {
-  objectToEncapsulateSolutionsWrongAnswersAndTurn[
-    getLetterFromCounter(turnCounter)
-  ].wrongAnswer = strikethroughThisString(answer);
-};
-
-const refreshTurnInObject = () => {
-  for (let i = 0; i < 26; i++) {
-    if (
-      objectToEncapsulateSolutionsWrongAnswersAndTurn[getLetterFromCounter(i)]
-        .turn
-    ) {
-      delete objectToEncapsulateSolutionsWrongAnswersAndTurn[
-        getLetterFromCounter(i)
-      ].turn;
-    }
-  }
-
-  objectToEncapsulateSolutionsWrongAnswersAndTurn[
-    getLetterFromCounter(turnCounter)
-  ].turn = "⬅";
-};
-
-const dataDisplay = () => {
-  if (paused) {
-    startTimer();
-  }
-
+const displayRosco = () => {
   console.clear();
-  updateTime();
-  console.log("Time remaining: " + secs + " seconds.");
-
-  console.table(objectToEncapsulateSolutionsWrongAnswersAndTurn);
+  console.log("Turnc " + turnCounter);
+  lettersAndTurnForDisplay();
+  console.table(arrayAnswersGiven);
 };
 
-let objectToEncapsulateRankingMetrics = {};
-
-/* const recordScore = () => {
-  objectToEncapsulateRankingMetrics[gameCounter].username = username();
-
-  objectToEncapsulateRankingMetrics[gameCounter].correctAnswers =
-    correctAnswers;
-
-  if (secs < 0) {
-    objectToEncapsulateRankingMetrics[gameCounter].secondsLeft = 0;
-  } else {
-    objectToEncapsulateRankingMetrics[gameCounter].secondsLeft = secs;
-  }
-}; */
-
-const recordScore = () => {
-  function EntryForObjectToEncapsulateRankingMetrics() {
-    this.username = username();
-    this.correctAnswers = correctAnswers;
-    if (secs < 0) {
-      this.secondsLeft = 0;
-    } else {
-      this.secondsLeft = secs;
-    }
-  }
-
-  objectToEncapsulateRankingMetrics[gameCounter] =
-    new EntryForObjectToEncapsulateRankingMetrics(); //aqui?
-};
-
-const displayRanking = () => {
-  console.table(objectToEncapsulateRankingMetrics);
-
-  let informationPannel = [];
-
-  for (
-    let i = 1;
-    i < Object.values(objectToEncapsulateRankingMetrics).length + 1;
-    i++
-  ) {
-    objectToEncapsulateRankingMetrics[
-      i
-    ].string = `${objectToEncapsulateRankingMetrics[i].username} answered ${objectToEncapsulateRankingMetrics[i].correctAnswers} answers correctly. ${objectToEncapsulateRankingMetrics[i].username} finished the game with ${objectToEncapsulateRankingMetrics[i].secondsLeft} seconds left.\n`;
-    informationPannel.push(objectToEncapsulateRankingMetrics[i].string);
-  }
-  return alert(informationPannel.join(" "));
-};
-
-const endGame = () => {
-  console.clear();
-  stillPlaying = false;
-
-  if (answeredQuestionsCounter() > 25) {
-    alert("Game over! Let´s see your score on the scoreboard.");
-
-    recordScore();
-    return displayRanking();
-  }
-
-  if (secs <= 0) {
-    console.log("Time out!!!");
-
-    recordScore();
-    return displayRanking();
-  } else {
-    console.log("You aborted the game"); //cambiar por thanks
+const lettersAndTurnForDisplay = () => {
+  for (let i = 0; i < questions.length; i++) {
+    entriesForDisplayConstructor(getLetterFromCounter(i), i);
   }
 };
 
-let stillPlaying = true;
+function objectForDisplay(turn, solution, wrongAnswer) {
+  if (turn === turnCounter) {
+    this.turn = "⬅";
+  }
+  if (turn !== turnCounter) {
+    delete this.turn;
+  }
+  if (solution) {
+    //pasapalabra
+    this.solution = solution;
+  }
+  if (wrongAnswer) {
+    this.wrongAnswer = wrongAnswer;
+  }
+}
 
-const gameStillGoingOrNot = () => {
-  if (secs <= 0) {
-    return endGame();
+var arrayAnswersGiven = {};
+
+const entriesForDisplayConstructor = (letter, turn) => {
+  arrayAnswersGiven[letter] = new objectForDisplay(turn);
+};
+
+const giveSolutionAndMaybeKeepWrongAnswerToo = (boolean) => {
+  arrayAnswersGiven[getLetterFromCounter(turnCounter)].solution =
+    getSolutionsFromCounter(turnCounter);
+
+  if (!boolean) {
+    arrayAnswersGiven[getLetterFromCounter(turnCounter)].wrongAnswer =
+      strikethroughThisString(answer);
   }
 };
 
-const playAnotherRound = () => {
-  if (confirm("Do you want to play a second round?")) {
-    gameCounter++;
+/* answer = "entra";
+giveSolutionAndMaybeKeepWrongAnswerToo(false, "toxic");
+delete arrayAnswersGiven[getLetterFromCounter(turnCounter)].wrongAnswer;
+console.log(arrayAnswersGiven.a.wrongAnswer); */
+let user = "String";
+//start();
 
-    clearStatus();
-
-    username();
-
-    return gameFlow();
-  } else endGame();
-};
-
-const clearStatus = () => {
-  stillPlaying = true;
-
-  user = "";
-
-  turnCounter = 0;
-
-  correctAnswers = 0;
-
-  startTime = 0;
-  elapsedTime = 0;
-  currentTime = 0;
-  paused = true;
-  intervalId;
-  secs = 0;
-
-  objectToEncapsulateSolutionsWrongAnswersAndTurn = {
-    example: { solution: "pasapalabra", wrongAnswer: "p̴a̴s̴a̴l̴a̴c̴a̴b̴r̴a̴" },
-    a: {},
-    b: {},
-    c: {},
-    d: {},
-    e: {},
-    f: {},
-    g: {},
-    h: {},
-    i: {},
-    j: {},
-    k: {},
-    l: {},
-    m: {},
-    n: {},
-    o: {},
-    p: {},
-    q: {},
-    r: {},
-    s: {},
-    t: {},
-    u: {},
-    v: {},
-    w: {},
-    x: {},
-    y: {},
-    z: {},
-  };
-
-  resetTimer();
-};
-
-const gameFlow = () => {
-  do {
-    refreshTurnInObject();
-    dataDisplay();
-    questionPrompt();
-    isAnswerRightOrWrong();
-    markLetterAsAnswered();
-    gameStillGoingOrNot();
-    skipToNextLetterUnanswered();
-  } while (stillPlaying);
-  playAnotherRound();
-};
-
-const startGame = () => {
-  username();
-  gameFlow();
-};
-
-startGame();
-
-/* To do list:
-  
-  Order rankings
-  Delete Example when game begins 
-  change 26s 25s for object.value lengths
-  Add how long it took for each question
-  Make the console.table be seen all the time
-  Add username, introduction, thank you functions
-  Change the questions with second round
-  Deal with cancelar
-  
-   */
+/* lettersAndTurnForDisplay();
+giveSolutionAndMaybeKeepWrongAnswerToo(false);
+console.log(arrayAnswersGiven); */
+questions[turnCounter].status = 1;
+console.log(questions[turnCounter].status);
