@@ -13,6 +13,8 @@ const username = () => {
 
 const WELCOME = "Welcome";
 
+//
+
 const validateString = (value) => value && isNaN(Number(value));
 
 const validateNumber = (value) => value && !isNaN(Number(value));
@@ -41,3 +43,20 @@ const randomNumberGenerator = () => {
 
   return randomNumber;
 };
+
+// declarando variables y limpiando status
+
+const defaultState = () => ({
+  turnCounter: 0,
+  correctAnswers: 0,
+});
+
+let state = defaultState();
+
+state.turnCounter = 1;
+
+state = defaultState();
+
+console.log("state", state);
+
+//

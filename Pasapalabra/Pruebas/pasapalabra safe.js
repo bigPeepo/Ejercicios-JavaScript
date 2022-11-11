@@ -334,7 +334,6 @@ const dataDisplay = () => {
   }
 
   console.clear();
-  console.log("Delete");
   updateTime();
   console.log("Time remaining: " + state.secs + " seconds.");
 
@@ -354,7 +353,7 @@ const recordScore = () => {
     }
   }
 
-  objectToEncapsulateRankingMetrics.nestedObject =
+  objectToEncapsulateRankingMetrics[gameCounter] =
     new EntryForObjectToEncapsulateRankingMetrics();
 };
 
