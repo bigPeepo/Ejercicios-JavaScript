@@ -1,5 +1,7 @@
 import { questions, questions2, questions3 } from "./questions.js";
 
+let currentQuestionDatabase = questions;
+
 const NUMBER_OF_QUESTION_DATABASES = 3;
 
 const SECONDS_ASSIGNED = 300;
@@ -9,8 +11,6 @@ let gameCounter = 1;
 let objectToEncapsulateRankingMetrics = {};
 
 let rankingSorted = [];
-
-let currentQuestionDatabase = questions;
 
 const setDefaultState = () => ({
   user: "",
@@ -341,7 +341,7 @@ const displayElements = () => {
 function EntryForObjectToEncapsulateRankingMetrics() {
   this.username = state.user;
   this.correctAnswers = state.correctAnswers;
-  this.wrongAnswers = state.wrongAnswers; ///aquí
+  this.wrongAnswers = state.wrongAnswers;
 
   if (state.secs < 0) {
     this.secondsLeft = 0;
@@ -354,6 +354,7 @@ const recordScore = () => {
   objectToEncapsulateRankingMetrics[gameCounter] =
     new EntryForObjectToEncapsulateRankingMetrics();
 };
+
 const rankingSorter = () => {
   rankingSorted = Object.values(objectToEncapsulateRankingMetrics).sort(
     (a, b) => {
@@ -410,7 +411,7 @@ const playAnotherRound = () => {
 
     theGameWillBeginAlert();
     return gameFlow();
-  } else return;
+  }
 };
 
 const questionStatusSetDefault = () => {
