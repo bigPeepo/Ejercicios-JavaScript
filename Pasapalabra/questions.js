@@ -75,7 +75,7 @@ export const questions = [
   },
   {
     letter: "l",
-    answer: "lier",
+    answer: "liar",
     status: 0,
     question: "With the letter L.\nA person who doesn't tell the truth.",
   },
@@ -306,7 +306,7 @@ export const questions2 = [
   },
   {
     letter: "s",
-    answer: "Sun",
+    answer: "sun",
     status: 0,
     question:
       "With the letter S.\n The star that provides light and heat for the earth and around which the earth moves.",

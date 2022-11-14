@@ -1,59 +1,30 @@
-let object = {
-  1: { name: 'Dani', score: 110 },
-  2: { name: 'Jordi', score: 90 }, 
-  3: { name: 'Jordi', score: 100 }
+const objectToEncapsulateRankingMetrics = {
+  1: {username: "Dani", correctAnswers: 3, wrongAnswers:3, secondsLeft:1},
+  2: {username: "Jose", correctAnswers: 7, wrongAnswers:3, secondsLeft:0},
+  3: {username: "Katya", correctAnswers: 6, wrongAnswers:3, secondsLeft:0},  
+  4: {username: "Pablo", correctAnswers: 5, wrongAnswers:2, secondsLeft:0},
+  
+}
+let rankingSorted;
+const sorted = (metric, object) => { rankingSorted = Object.values(object).sort((a, b)=> {
+  if (a[metric] < b[metric]) {
+    return -1
+  }
+  if (a[metric] > b[metric]) {
+    return -1
+  } else {return 0}
+})
+return rankingSorted}
+
+sorted("correctAnswers",objectToEncapsulateRankingMetrics )
+
+console.log(rankingSorted)
+
+function getKeyByValue(object, value) {
+  return Object.keys(object).find(key => object[key] === value);
 }
 
-console.log(object[1])
+console.log(getKeyByValue(objectToEncapsulateRankingMetrics,rankingSorted))
 
-const newArray= [object[1],object[2],object[3]]
+let first = {}
 
-
-console.log(newArray)
-
-
-
-
-const obj = Object.entries(object)
-
-console.log(Object.getOwnPropertyNames(object))
-
-
-
-
-let object2 = [
-  {nestedobj: { name: 'Dani', score: 110 }},
-  {nestedobj: { name: 'Jordi', score: 100 }}, 
-  {nestedobj: { name: 'Jordi', score: 90 }}
-]
-
-console.log(object)
-
-var sort = function (prop, arr) {
-    prop = prop.split('.');
-    var len = prop.length;
-    
-    arr.sort(function (a, b) {
-        var i = 0;
-        while( i < len ) {
-            a = a[prop[i]];
-            b = b[prop[i]];
-            i++;
-        }
-        if (a < b) {
-            return -1;
-        } else if (a > b) {
-            return 1;
-        } else {
-            return 0;
-        }
-    });
-    return arr;
-};
-console.log(
-    sort('nestedobj.score', object)
-    );
-
-
-
-console.log(1%3)

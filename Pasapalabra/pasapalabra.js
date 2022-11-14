@@ -2,11 +2,15 @@ import { questions, questions2, questions3 } from "./questions.js";
 
 const NUMBER_OF_QUESTION_DATABASES = 3;
 
-const SECONDS_ASSIGNED = 9;
+const SECONDS_ASSIGNED = 300;
 
 let gameCounter = 1;
 
 let objectToEncapsulateRankingMetrics = {};
+
+let rankingSorted = [];
+
+let currentQuestionDatabase = questions;
 
 const setDefaultState = () => ({
   user: "",
@@ -14,6 +18,7 @@ const setDefaultState = () => ({
   turnCounter: 0,
   correctAnswers: 0,
   wrongAnswers: 0,
+  answerCounter: 0,
   timeAssigned: SECONDS_ASSIGNED * 1000,
   startTime: 0,
   elapsedTime: 0,
@@ -56,37 +61,22 @@ const setDefaultState = () => ({
 
 let state = setDefaultState();
 
-const randomNumberGenerator = () => {
-  const numberMinimum = 1;
-  const numberMaximum = NUMBER_OF_QUESTION_DATABASES;
-
-  state.randomNumber = Math.round(
-    Math.random() * (numberMaximum - numberMinimum) + numberMinimum
-  );
-
-  return state.randomNumber;
-};
-
 const questionDatabaseSwitcher = () => {
   switch (gameCounter % 3) {
     case 1:
-      return questions;
+      return (currentQuestionDatabase = questions);
       break;
     case 2:
-      return questions2;
+      return (currentQuestionDatabase = questions2);
       break;
     case 0:
-      return questions3;
+      return (currentQuestionDatabase = questions3);
       break;
-    default:
-      return questions;
   }
 };
 
-const currentQuestionDatabase = questionDatabaseSwitcher();
-
 const username = () => {
-  if (!state.user || state.user === "") {
+  if (!state.user) {
     do {
       state.user = prompt("What is your username for this round?");
       if (!state.user) {
@@ -108,32 +98,31 @@ const turnAdd1 = () => {
 };
 
 const answeredQuestionsCounter = () => {
-  let answerCounter = 0;
+  state.answerCounter = 0;
 
   for (let i = 0; i < currentQuestionDatabase.length; i++) {
     if (currentQuestionDatabase[i].status) {
-      answerCounter++;
+      state.answerCounter++;
     }
   }
 
-  return answerCounter;
+  return state.answerCounter;
 };
 
 const skipToNextLetterUnanswered = () => {
-  turnAdd1();
+  if (state.answerCounter != currentQuestionDatabase.length) {
+    do {
+      if (!currentQuestionDatabase[state.turnCounter].status) {
+        return state.turnCounter;
+      }
 
-  if (answeredQuestionsCounter() > 25) {
-    return endGame();
+      turnAdd1();
+    } while (currentQuestionDatabase[state.turnCounter].status);
+
+    return state.turnCounter;
+  } else {
+    endGame();
   }
-
-  do {
-    if (!currentQuestionDatabase[state.turnCounter].status) {
-      return state.turnCounter;
-    }
-    turnAdd1();
-  } while (currentQuestionDatabase[state.turnCounter].status);
-
-  return state.turnCounter;
 };
 
 const startTimer = () => {
@@ -179,66 +168,74 @@ const askAgainIfCancelled = (message) => {
   return value.toLowerCase().trim();
 };
 
+const getLetterFromCounter = (counter) => {
+  return currentQuestionDatabase[counter].letter;
+};
+
+const getAnswerFromCounter = (counter) => {
+  return currentQuestionDatabase[counter].answer;
+};
+
+const getQuestionFromCounter = (counter) => {
+  return currentQuestionDatabase[counter].question;
+};
+
 const questionPrompt = () => {
   state.answer = askAgainIfCancelled(getQuestionFromCounter(state.turnCounter));
 };
 
-const markLetterAsAnswered = () => {
-  if (state.answer === "pasapalabra" || state.answer === "") {
+const checkIfWeCountTheAnswer = () => {
+  timeOutOrEnd();
+  checkForPasapalabra();
+  markLetterAsAnswered();
+};
+
+const timeOutOrEnd = () => {
+  updateTime();
+
+  if (state.secs <= 0 || state.answer === "end") {
+    return endGame();
+  }
+};
+
+const checkForPasapalabra = () => {
+  if (
+    state.answer === "pasapalabra" ||
+    state.answer === "" ||
+    !state.stillPlaying
+  ) {
+    turnAdd1();
     return;
   }
-  questions[state.turnCounter].status = 1;
-};
 
-const getLetterFromCounter = (counter) => {
-  return Object.values(currentQuestionDatabase[counter])[0];
-};
-
-const getSolutionFromCounter = (counter) => {
-  //do I need to call parameter?
-  return Object.values(currentQuestionDatabase[counter])[1];
-};
-
-const getQuestionFromCounter = () => {
-  return Object.values(currentQuestionDatabase[state.turnCounter])[3];
+  isAnswerRightOrWrong();
 };
 
 const isAnswerRightOrWrong = () => {
-  gameStillGoingOrNot();
-
-  if (state.answer === "end") {
-    return endGame();
-  }
-
-  if (state.answer === "pasapalabra" || state.answer === "") {
-    //or empty string
-
-    return;
-  }
-
-  if (
-    getSolutionFromCounter(state.turnCounter) === state.answer &&
-    state.stillPlaying
-  ) {
+  if (getAnswerFromCounter(state.turnCounter) === state.answer) {
     state.correctAnswers++;
 
     return alertSolution(true);
-  }
-
-  if (
-    getSolutionFromCounter(state.turnCounter) !== state.answer &&
-    state.stillPlaying
-  ) {
+  } else {
     state.wrongAnswers++;
 
     return alertSolution(false);
   }
 };
 
+const markLetterAsAnswered = () => {
+  if (state.answer === "pasapalabra" || state.answer === "") {
+    return;
+  } else {
+    currentQuestionDatabase[state.turnCounter].status = 1;
+    return answeredQuestionsCounter();
+  }
+};
+
 const alertSolution = (boolean) => {
   if (boolean) {
     alert(
-      `Correct!\n\nThe state.answer is "${getSolutionFromCounter(
+      `Correct!\n\nThe state.answer is "${getAnswerFromCounter(
         state.turnCounter
       )}".`
     );
@@ -250,7 +247,7 @@ const alertSolution = (boolean) => {
     pauseTimer();
 
     alert(
-      `That is wrong... The state.answer we were looking for is "${getSolutionFromCounter(
+      `That is wrong... The state.answer we were looking for is "${getAnswerFromCounter(
         state.turnCounter
       )}".`
     );
@@ -260,7 +257,13 @@ const alertSolution = (boolean) => {
   }
 };
 
-const strikethroughLetterEquivalence = {
+const storeSolutionInObject = () => {
+  state.objectToEncapsulateSolutionsWrongAnswersAndTurn[
+    getLetterFromCounter(state.turnCounter)
+  ].solution = getAnswerFromCounter(state.turnCounter);
+};
+
+const strikethroughDictionary = {
   a: "a̴",
   b: "b̴",
   c: "c̴",
@@ -292,16 +295,10 @@ const strikethroughLetterEquivalence = {
 const strikethroughThisString = (targetWord) => {
   let strikedthroughConcat = "";
   for (let i = 0; i < targetWord.length; i++) {
-    strikedthroughConcat += strikethroughLetterEquivalence[targetWord[i]];
+    strikedthroughConcat += strikethroughDictionary[targetWord[i]];
   }
 
   return strikedthroughConcat;
-};
-
-const storeSolutionInObject = () => {
-  state.objectToEncapsulateSolutionsWrongAnswersAndTurn[
-    getLetterFromCounter(state.turnCounter)
-  ].solution = getSolutionFromCounter(state.turnCounter);
 };
 
 const storeWrongAnswerInObjects = () => {
@@ -310,7 +307,12 @@ const storeWrongAnswerInObjects = () => {
   ].wrongAnswer = strikethroughThisString(state.answer);
 };
 
-const refreshTurnInObject = () => {
+const dataDisplay = () => {
+  addTurnAsVisualCueInObject();
+  displayElements();
+};
+
+const addTurnAsVisualCueInObject = () => {
   for (let i = 0; i < currentQuestionDatabase.length; i++) {
     if (
       state.objectToEncapsulateSolutionsWrongAnswersAndTurn[
@@ -328,121 +330,162 @@ const refreshTurnInObject = () => {
   ].turn = "⬅";
 };
 
-const dataDisplay = () => {
-  if (state.paused) {
-    startTimer();
-  }
-
+const displayElements = () => {
   console.clear();
-  console.log("delete this " + gameCounter);
   updateTime();
   console.log("Time remaining: " + state.secs + " seconds.");
 
   console.table(state.objectToEncapsulateSolutionsWrongAnswersAndTurn);
 };
 
-const recordScore = () => {
-  function EntryForObjectToEncapsulateRankingMetrics() {
-    this.username = state.user;
-    this.correctAnswers = state.correctAnswers;
-    this.wrongAnswers = state.wrongAnswers; ///aquí
+function EntryForObjectToEncapsulateRankingMetrics() {
+  this.username = state.user;
+  this.correctAnswers = state.correctAnswers;
+  this.wrongAnswers = state.wrongAnswers; ///aquí
 
-    if (state.secs < 0) {
-      this.secondsLeft = 0;
-    } else {
-      this.secondsLeft = state.secs;
-    }
+  if (state.secs < 0) {
+    this.secondsLeft = 0;
+  } else {
+    this.secondsLeft = state.secs;
   }
+}
 
+const recordScore = () => {
   objectToEncapsulateRankingMetrics[gameCounter] =
     new EntryForObjectToEncapsulateRankingMetrics();
 };
+const rankingSorter = () => {
+  rankingSorted = Object.values(objectToEncapsulateRankingMetrics).sort(
+    (a, b) => {
+      if (a.correctAnswers > b.correctAnswers) {
+        return -1;
+      }
+      if (a.correctAnswers < b.correctAnswers) {
+        return 1;
+      }
+      if (a.wrongAnswers > b.wrongAnswers) {
+        return -1;
+      }
+      if (a.wrongAnswers < b.wrongAnswers) {
+        return 1;
+      }
+      if (a.secondsLeft > b.secondsLeft) {
+        return -1;
+      }
+      if (a.secondsLeft < b.secondsLeft) {
+        return 1;
+      }
+      return 0;
+    }
+  );
+  return rankingSorted;
+};
 
 const displayRanking = () => {
-  console.table(objectToEncapsulateRankingMetrics);
-  console.log(objectToEncapsulateRankingMetrics);
+  rankingSorter();
+  console.table(rankingSorted);
+
   let informationPannel = [];
 
-  for (
-    let i = 1;
-    i < Object.values(objectToEncapsulateRankingMetrics).length + 1;
-    i++
-  ) {
-    objectToEncapsulateRankingMetrics[
+  for (let i = 0; i < Object.values(rankingSorted).length; i++) {
+    rankingSorted[
       i
-    ].string = `${objectToEncapsulateRankingMetrics[i].username} answered ${objectToEncapsulateRankingMetrics[i].correctAnswers} answers correctly and ${objectToEncapsulateRankingMetrics[i].wrongAnswers} incorrectly. ${objectToEncapsulateRankingMetrics[i].username} finished the game with ${objectToEncapsulateRankingMetrics[i].secondsLeft} seconds left.\n`;
-    informationPannel.push(objectToEncapsulateRankingMetrics[i].string);
+    ].string = `${rankingSorted[i].username} answered ${rankingSorted[i].correctAnswers} answers correctly and ${rankingSorted[i].wrongAnswers} incorrectly. ${rankingSorted[i].username} finished the game with ${rankingSorted[i].secondsLeft} seconds left.\n`;
+    informationPannel.push(rankingSorted[i].string);
   }
   return alert(informationPannel.join(" "));
 };
 
-const endGame = () => {
-  console.clear();
-  state.stillPlaying = false;
-  if (answeredQuestionsCounter() > currentQuestionDatabase.length) {
-    alert("Game over! Let´s see your score on the scoreboard.");
-
-    recordScore();
-    return displayRanking();
-  }
-
-  if (state.secs <= 0) {
-    console.log("Time out!!!");
-
-    recordScore();
-    return displayRanking();
-  } else {
-    console.log("You aborted the game"); //cambiar por thanks
-  }
-};
-
-//todas gameStill GOing here
-const gameStillGoingOrNot = () => {
-  updateTime();
-  if (state.secs <= 0) {
-    return endGame();
-  }
-};
-
 const playAnotherRound = () => {
   if (confirm("Do you want to play another round?")) {
+    questionStatusSetDefault();
+
     gameCounter++;
 
     state = setDefaultState();
 
     username();
 
+    questionDatabaseSwitcher();
+
+    theGameWillBeginAlert();
     return gameFlow();
-  } else endGame();
+  } else return;
 };
 
-//reset.Timer()
+const questionStatusSetDefault = () => {
+  for (let i = 0; i < currentQuestionDatabase.length; i++) {
+    currentQuestionDatabase[i].status = 0;
+  }
+};
+
+const endGame = () => {
+  console.clear();
+  state.stillPlaying = false;
+
+  if (state.answerCounter >= currentQuestionDatabase.length) {
+    alert(
+      "Game over!\nYou answered all the questions...\n\n Let´s see your score on the scoreboard."
+    );
+
+    recordScore();
+    return displayRanking();
+  }
+
+  if (state.secs <= 0) {
+    alert(
+      `Time out!!!\n\n You didn't answer the last question on time, so we won´t be evaluation your answer "${state.answer}"`
+    );
+
+    recordScore();
+    return displayRanking();
+  } else {
+    return alert(
+      `You aborted the game.\n\n You got ${state.correctAnswers} questions right.`
+    );
+  }
+};
+
+const introduction = () => {
+  alert(
+    "Welcome to pure JavaScript Pasapalabra.\n\nYou will be asked a question for every letter of the alphabet.\n\nThe word that answers said question can either start with that letter or contain that letter, so be careful when reading the question!"
+  );
+  alert(
+    `If your answer is correct, you get one point!\n\nIf you want to leave a question for later, you can type "pasapalabra" or just hit accept with an empty field.\n\nWhen you get a question wrong, time will be paused. Feel free to take your time reading the correct answer.`
+  );
+  alert(
+    `You will be asked a username for every round you play.\n\nYour score will be ranked by correct answers. In case of a tie, wrong answers will be taken into consideration.\n\nThere is ${NUMBER_OF_QUESTION_DATABASES} different question databases to play with.`
+  );
+  alert(
+    `You have ${SECONDS_ASSIGNED} seconds to play.\n\nYou can also choose to end at any time, by typing "end".`
+  );
+};
+
+const theGameWillBeginAlert = () => {
+  alert("The game will now begin. Good luck!");
+};
+
+const thanks = () => {
+  alert("Thank you for playing pure JavaScript Pasapalabra!");
+};
 
 const gameFlow = () => {
   do {
-    refreshTurnInObject();
+    startTimer();
     dataDisplay();
     questionPrompt();
-    isAnswerRightOrWrong();
-    markLetterAsAnswered();
+    checkIfWeCountTheAnswer();
     skipToNextLetterUnanswered();
   } while (state.stillPlaying);
   playAnotherRound();
 };
 
 const startGame = () => {
+  introduction();
   username();
+  theGameWillBeginAlert();
   gameFlow();
+  thanks();
 };
 
 startGame();
-
-/* To do list:
-Add how long it took for each question
-Make the console.table be seen all the time
-Add username, introduction, thank you functions
-
-Order rankings  
-
-
-   */

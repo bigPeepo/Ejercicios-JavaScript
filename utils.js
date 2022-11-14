@@ -59,4 +59,27 @@ state = defaultState();
 
 console.log("state", state);
 
-//
+// sorting objects
+
+let object = {
+  1: { name: "Dani", score: 110 },
+  2: { name: "Jordi", score: 90 },
+  3: { name: "Jordi", score: 100 },
+};
+
+Object.values(object).sort((a, b) => {
+  return a.score - b.score;
+});
+
+const sorted = (metric, object) => {
+  Object.values(object).sort((a, b) => {
+    if (a[metric] < b[metric]) {
+      return -1;
+    }
+    if (a[metric] > b[metric]) {
+      return -1;
+    } else {
+      return 0;
+    }
+  });
+};

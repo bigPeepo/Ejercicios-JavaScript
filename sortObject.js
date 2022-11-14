@@ -2,7 +2,7 @@ import { questions, questions2, questions3 } from "./questions.js";
 
 const NUMBER_OF_QUESTION_DATABASES = 3;
 
-const SECONDS_ASSIGNED = 9;
+const SECONDS_ASSIGNED = 2;
 
 let gameCounter = 1;
 
@@ -67,19 +67,19 @@ const randomNumberGenerator = () => {
   return state.randomNumber;
 };
 
-const questionDatabaseSwitcher = (gameCounter) => {
-  switch (gameCounter) {
+const questionDatabaseSwitcher = () => {
+  switch (gameCounter % 3) {
     case 1:
       return questions;
       break;
     case 2:
       return questions2;
       break;
-    case 3:
+    case 0:
       return questions3;
       break;
     default:
-      return questionDatabaseSwitcher(randomNumberGenerator()); //?
+      return questions;
   }
 };
 
@@ -334,6 +334,7 @@ const dataDisplay = () => {
   }
 
   console.clear();
+  console.log("delete this " + gameCounter);
   updateTime();
   console.log("Time remaining: " + state.secs + " seconds.");
 
@@ -359,7 +360,7 @@ const recordScore = () => {
 
 const displayRanking = () => {
   console.table(objectToEncapsulateRankingMetrics);
-  console.log(objectToEncapsulateRankingMetrics);
+  console.log(JSON.stringify(objectToEncapsulateRankingMetrics));
   let informationPannel = [];
 
   for (
@@ -441,7 +442,7 @@ Add how long it took for each question
 Make the console.table be seen all the time
 Add username, introduction, thank you functions
 
-Order rankings
-How many letters right and wrong
+Order rankings  
+
 
    */
