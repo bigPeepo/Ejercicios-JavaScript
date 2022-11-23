@@ -1,0 +1,26 @@
+body {
+    width: 902px;
+    height: 550px;
+    background-color: rgb(49, 49, 49);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+div {
+    height: 150px;
+    width: 150px;
+    background-color: rgb(220, 220, 220);
+    border: 5px solid;
+    border-color: white;
+    color:rgb(153, 153, 153);
+    margin: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+div:hover {
+    cursor: pointer;
+    box-shadow: rgb(213, 211, 211) 0px 5px 15px;
+}

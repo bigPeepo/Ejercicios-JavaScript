@@ -5,7 +5,7 @@
   "description": "My ISDI precourse project",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/bigPeepo/Ejercicios-JavaScript/issues"
   },
-  "homepage": "https://github.com/bigPeepo/Ejercicios-JavaScript#readme"
+  "homepage": "https://github.com/bigPeepo/Ejercicios-JavaScript#readme",
+  "devDependencies": {
+    "jest": "^29.3.1"
+  }
 }

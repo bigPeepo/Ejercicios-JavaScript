@@ -1,0 +1,27 @@
+.pic {
+    height: 120px;
+    width: 120px;
+    display: flex;
+    align-items: center;
+    margin: 15px;
+}
+
+div {
+    height: 145px;
+    width: 455px;
+    display: flex;
+    align-items: center;
+}
+
+
+div:hover {
+    background-color:  rgb(226, 226, 226);
+    cursor: pointer;
+}
+
+p {
+    width: 300px;
+    text-align: justify;
+}
+
+

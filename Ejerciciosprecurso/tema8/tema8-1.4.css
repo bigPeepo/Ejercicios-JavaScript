@@ -1,0 +1,60 @@
+body {
+    display: flex;
+    background-color: rgb(118, 195, 93);    
+    justify-content: center ;
+    height: 800px;
+    align-content: center;
+    align-items: center;
+    font-family: sans-serif;
+}
+
+span {
+    background-color: white;
+    height: 310px;
+    width: 400px;
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    justify-content: center;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+input[type=text] {
+    background-color: #f1f1f1;
+    color: rgb(206, 203, 203);
+    height: 50px;
+    width: 280px;
+    text-align: left;
+    text-indent: 1ch;
+    border: 0px;
+    margin: 6px;
+}
+
+button {
+    border: 0px;
+    border-radius: 0%;
+    line-height: 50px;
+    width: 280px;
+    background-color: rgb(0, 178, 66);
+    color:white;
+    font-weight: lighter;
+    margin: 6px;
+}
+
+div {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.not {
+    color:rgb(206, 203, 203);
+    font-size: smaller;
+    margin: 4px;
+}
+
+.create {
+    color: rgb(118, 195, 93);
+    font-size: smaller;  
+    margin: 4px;
+}   

@@ -1,0 +1,194 @@
+body {
+    font-family: sans-serif;
+    margin: 0px;
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    color: rgb(120, 120, 120);  
+    font-size: 10px;
+}
+
+.header div {
+    margin: 5px;
+}
+
+.pricing {
+    color: black;
+}
+
+.trees {
+    width: 100%;
+    height: fit-content;
+}
+
+.banner {
+    height: 250px;
+}
+
+.slogan {
+    position: relative;
+    top: -165px;
+    text-align: center;
+    color: white;
+    font-size: 25px;
+    text-shadow: 2px 2px 2px #2D2D2D;
+}
+
+
+.plans {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.plan {
+    display: flex;
+    flex-direction: column;
+    margin: 4px;
+}
+
+.planHeader {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    height: fit-content;
+    color: white;
+    text-align: center; 
+}
+
+.planHeader div{
+    align-self: center;
+    justify-self: flex-start;
+
+}
+
+.planType {
+    font-size: 12px;
+}
+
+.planPrice {
+    height: 15px;
+    font-size: 45px;
+    margin: 4px;
+    position: relative;
+    top: -14px;
+}
+
+.perMonth {
+    color: rgb(170, 170, 170);
+    font-size: 9px;
+    position: relative;
+    top: 3px;
+    font-weight: bold;
+}
+
+.planPerks {
+    height: fit-content;
+}
+
+.planPerks div{
+    background-color: rgb(247, 246, 246);
+    height: 25px;
+    text-align: center;
+    color: rgb(123, 123, 123);
+    font-size: 8px;
+    font-weight: 700;
+    width: 165px;
+    border-bottom: 1px solid  rgb(223, 223, 223);
+}
+
+.greenPerks {
+    border-right: 1px solid  rgb(223, 223, 223);
+}
+
+.bluePerks {
+    border-right: 1px solid  rgb(223, 223, 223);
+    border-left: 1px solid  rgb(223, 223, 223);
+}
+
+.blackPerks {
+    border-left: 1px solid  rgb(223, 223, 223);
+}
+
+.planPerks p {
+    height: 0px;
+    margin: 0px;
+    position: relative;
+    top: 9px;
+}
+
+#button {
+    background-color: rgb(255, 255, 255);
+    height: 40px;
+    width: 164px;
+}
+
+.buttonLeft{
+    border-left: 1px solid  rgb(223, 223, 223);
+}
+
+.buttonRight{
+    border-right: 1px solid  rgb(223, 223, 223);
+}
+
+.choose {
+  align-items: center;
+  appearance: none;
+  background-color: #fff;
+  border: 1px solid #dbdbdb;
+  border-radius: 1.2em;
+  box-shadow: none;
+  box-sizing: border-box;
+  color: #363636;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: sans-serif;
+  font-size: 9px;
+  height: 2.5em;
+  justify-content: center;
+  line-height: 1.5;
+  padding: calc(.5em - 1px) 1em;
+  position: relative;
+  text-align: center;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: top;
+  white-space: nowrap;
+  font-weight: bold;
+  position: relative;
+  top: 9px;
+}
+
+.choose:active {
+  border-color: #4a4a4a;
+  outline: 0;
+}
+
+.choose:focus {
+  border-color: #485fc7;
+  outline: 0;
+}
+
+.choose:hover {
+  border-color: #b5b5b5;
+}
+
+.choose:focus:not(:active) {
+  box-shadow: rgba(72, 95, 199, .25) 0 0 0 .125em;
+}
+
+.green {
+    background-color: rgb(81, 146, 81);
+}
+
+.blue {
+    background-color: rgb(44, 73, 133);
+}
+
+.black {
+    background-color: rgb(17, 17, 17);
+}
