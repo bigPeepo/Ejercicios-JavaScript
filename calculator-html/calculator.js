@@ -48,19 +48,19 @@ buttons.map((button) => {
         break;
 
       case "÷":
-        divisionAction();
+        operatorAction("division");
         break;
 
       case "×":
-        multiplicationAction();
+        operatorAction("multiplication");
         break;
 
       case "-":
-        restAction();
+        operatorAction("rest");
         break;
 
       case "+":
-        sumAction();
+        operatorAction("sum");
         break;
 
       case "=":
@@ -99,7 +99,7 @@ const comma = () => {
   if (!display.innerText.includes(".")) display.innerText += ".";
 };
 
-const divisionAction = () => {
+const operatorAction = (action) => {
   operatorsInARowCounter++;
 
   if (savedDisplay && operatorsInARowCounter < 2) {
@@ -107,56 +107,10 @@ const divisionAction = () => {
   }
 
   operationsStatus = operationsDefaultStatus();
+
   operationsStatus.start = true;
-  operationsStatus.division = true;
 
-  savedDisplay = display.innerText;
-
-  operatorsHighlight();
-};
-
-const multiplicationAction = () => {
-  operatorsInARowCounter++;
-
-  if (savedDisplay && operatorsInARowCounter < 2) {
-    equal();
-  }
-
-  operationsStatus = operationsDefaultStatus();
-  operationsStatus.start = true;
-  operationsStatus.multiplication = true;
-
-  savedDisplay = display.innerText;
-
-  operatorsHighlight();
-};
-
-const restAction = () => {
-  operatorsInARowCounter++;
-
-  if (savedDisplay && operatorsInARowCounter < 2) {
-    equal();
-  }
-
-  operationsStatus = operationsDefaultStatus();
-  operationsStatus.start = true;
-  operationsStatus.rest = true;
-
-  savedDisplay = display.innerText;
-
-  operatorsHighlight();
-};
-
-const sumAction = () => {
-  operatorsInARowCounter++;
-
-  if (savedDisplay && operatorsInARowCounter < 2) {
-    equal();
-  }
-
-  operationsStatus = operationsDefaultStatus();
-  operationsStatus.start = true;
-  operationsStatus.sum = true;
+  operationsStatus[action] = true;
 
   savedDisplay = display.innerText;
 
@@ -210,25 +164,42 @@ const printANumber = (number) => {
     display.innerText = number;
 
     operatorsInARowCounter = 0;
-  } else if (
+    return;
+  }
+
+  if (
     display.innerText.toString().length >= DISPLAY_MAX_CHARACTERS &&
     !operationsStatus.start
   ) {
-  } else {
-    if (operationsStatus.start) {
-      operationsStatus.start = false;
-
-      display.innerText = "";
-    }
-    display.innerText += number;
-
-    operatorsInARowCounter = 0;
+    return;
   }
+
+  if (operationsStatus.start) {
+    operationsStatus.start = false;
+
+    display.innerText = "";
+  }
+
+  display.innerText += number;
+
+  operatorsInARowCounter = 0;
 };
 
 // Shielding the display from unsavory results:
 
 const shortenThisNumber = () => {
+  const hasComma = display.innerText.includes(".");
+
+  const lengthBeforeComma = hasComma && display.innerText.split(".")[0].length;
+  const lengthAfterComma = hasComma && display.innerText.split(".")[1].length;
+  const isExponential = display.innerText.includes("e");
+  const numberBeforeComma = hasComma && display.innerText.split(".")[0];
+  const numberAfterComma = hasComma && display.innerText.split(".")[1];
+  const numberLength = display.innerText.length;
+  const commaLength = 1;
+
+  debugger;
+
   if (
     display.innerText.toString().split(".")[0].length >
       DISPLAY_MAX_CHARACTERS ||
