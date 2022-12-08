@@ -80,7 +80,7 @@ const allClear = () => {
   savedDisplay = "";
   operatorsInARowCounter = 0;
   operationsStatus = operationsDefaultStatus();
-  operatorsDefaultColors();
+  // operatorsDefaultColors();
 };
 
 const negation = () => {
@@ -188,51 +188,19 @@ const printANumber = (number) => {
 // Shielding the display from unsavory results:
 
 const shortenThisNumber = () => {
+  const isExponential = display.innerText.includes("e");
   const hasComma = display.innerText.includes(".");
 
-  const lengthBeforeComma = hasComma && display.innerText.split(".")[0].length;
-  const lengthAfterComma = hasComma && display.innerText.split(".")[1].length;
-  const isExponential = display.innerText.includes("e");
-  const numberBeforeComma = hasComma && display.innerText.split(".")[0];
-  const numberAfterComma = hasComma && display.innerText.split(".")[1];
-  const numberLength = display.innerText.length;
-  const commaLength = 1;
-
-  debugger;
-
-  if (
-    display.innerText.toString().split(".")[0].length >
-      DISPLAY_MAX_CHARACTERS ||
-    display.innerText.toString().includes("e")
-  ) {
+  if (!hasComma || isExponential) {
     toExponential(display.innerText);
+
+    return;
   }
 
-  if (
-    display.innerText.toString().includes(".") &&
-    display.innerText.toString().split(".")[0].length +
-      display.innerText.toString().split(".")[1].length >
-      DISPLAY_MAX_CHARACTERS
-  ) {
-    let numLength = display.innerText.toString().split(".")[0].length;
+  display.innerText = display.innerText.slice(0, DISPLAY_MAX_CHARACTERS);
 
-    display.innerText =
-      display.innerText.toString().split(".")[0] +
-      "." +
-      display.innerText
-        .toString()
-        .split(".")[1]
-        .slice(0, DISPLAY_MAX_CHARACTERS - numLength);
-  }
-
-  if (display.innerText.toString().includes(".")) {
-    display.innerText = display.innerText
-      .toString()
-      .slice(0, DISPLAY_MAX_CHARACTERS);
-  }
-
-  if (display.innerText[7] === ".") {
-    display.innerText = display.innerText.slice(0, DISPLAY_MAX_CHARACTERS - 1);
+  if (display.innerText[display.innerText.length - 1] === ".") {
+    display.innerText = display.innerText.slice(0, -1);
   }
 };
 
@@ -247,9 +215,11 @@ const checkForNaN = () => {
 };
 
 const checkValidNumber = () => {
-  display.innerText = parseFloat(display.innerText);
+  const isExponential = display.innerText.includes("e");
 
-  shortenThisNumber();
+  if (display.innerText.length > DISPLAY_MAX_CHARACTERS || isExponential) {
+    shortenThisNumber();
+  }
 
   checkForNaN();
 };
@@ -257,38 +227,24 @@ const checkValidNumber = () => {
 // Adding a highlight when operators are active:
 
 const operatorsHighlight = () => {
+  operatorsDefaultColors();
   if (operationsStatus.division) {
-    operatorsDefaultColors();
-
-    divisor.style.backgroundColor = "white";
-    divisor.style.color = "orange";
-  } else if (operationsStatus.multiplication) {
-    operatorsDefaultColors();
-
-    multiplyer.style.backgroundColor = "white";
-    multiplyer.style.color = "orange";
-  } else if (operationsStatus.rest) {
-    operatorsDefaultColors();
-
-    substractor.style.backgroundColor = "white";
-    substractor.style.color = "orange";
-  } else if (operationsStatus.sum) {
-    operatorsDefaultColors();
-
-    adder.style.backgroundColor = "white";
-    adder.style.color = "orange";
-  } else {
-    operatorsDefaultColors();
+    divisor.classList.add("active");
+  }
+  if (operationsStatus.multiplication) {
+    multiplyer.classList.add("active");
+  }
+  if (operationsStatus.rest) {
+    substractor.classList.add("active");
+  }
+  if (operationsStatus.sum) {
+    adder.classList.add("active");
   }
 };
 
 const operatorsDefaultColors = () => {
-  divisor.style.backgroundColor = "";
-  multiplyer.style.backgroundColor = "";
-  substractor.style.backgroundColor = "";
-  adder.style.backgroundColor = "";
-  divisor.style.color = "";
-  multiplyer.style.color = "";
-  substractor.style.color = "";
-  adder.style.color = "";
+  divisor.classList.remove("active");
+  multiplyer.classList.remove("active");
+  substractor.classList.remove("active");
+  adder.classList.remove("active");
 };

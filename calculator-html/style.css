@@ -60,6 +60,7 @@ body {
     background-color: orange;
 }
 
+
 .double {
     background-color: rgb(59, 59, 59);
     border-radius: 15ch;
@@ -93,4 +94,10 @@ body {
 .orange:hover {
     background-color: rgb(254, 213, 136);
     transition: 0.2s ease-in-out;
+}
+
+
+.active {
+    background-color: white;
+    color: orange;
 }
