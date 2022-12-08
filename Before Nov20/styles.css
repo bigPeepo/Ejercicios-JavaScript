@@ -1,127 +1,120 @@
 main {
-    width: 100%;
-    color: white;
-    font-family: sans-serif;
-    height: 50px;
-    line-height: 50px;
-    font-size: 155%;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  color: white;
+  font-family: sans-serif;
+  font-size: 155%;
 }
 
 .justified {
-    display: flex;
-    justify-content: space-around;
-    text-align: center;
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
 }
 
 .left {
-    display: flex;
-    justify-content: left;
-    text-align: center;
+  display: flex;
+  justify-content: left;
+  text-align: center;
 }
 
 span {
-    display: inline-block;
-    vertical-align: middle;
-    line-height: normal;
-    text-align: center;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+  line-height: normal;
 }
 
 .rounded div {
-    border-radius: 15ch;
+  border-radius: 15ch;
 }
 
 .square div {
-    border-radius: 0.3ch;
+  border-radius: 0.3ch;
 }
 
-.roundCorners div {
-    border-radius: 1ch;
-
+.round-corners div {
+  border-radius: 1ch;
 }
 
 .button {
-    width: 193px;   
-    border: 2px solid;
+  border: 2px solid;
+  width: 193px;
 }
 
 .smallButton {
-    width: 150px;   
-    border: 2px solid;
-    height: 55px;
-    line-height: 55px;
-    margin: 3px;
+  margin: 3px;
+  border: 2px solid;
+  width: 150px;
+  height: 55px;
+  line-height: 55px;
 }
 
 .bigButton {
-    width: 290px;   
-    border: 2px solid;
-    height: 130px;
-    line-height: 130px;
-    margin: 3px;
-    font-size: 200%;
+  margin: 3px;
+  border: 2px solid;
+  width: 290px;
+  height: 130px;
+  line-height: 130px;
+  font-size: 200%;
 }
 
 .empty div {
-    background-color: white;
-}
-
-.empty 
-.gray   {
-    color: rgb(219, 219, 219);
-}
-
-.empty 
-.blue   {
-    color: rgb(92, 157, 237);
-}
-
-.empty 
-.green   {
-    color: rgb(66, 203, 110);
-}
-
-.empty 
-.tiel   {
-    color: rgb(78, 194, 231);
-}
-
-.empty 
-.yellow   {
-    color: rgb(252, 206, 84);
-}
-
-.empty 
-.red  {
-    color: rgb(237, 85, 100);
+  background-color: white;
 }
 
 .gray {
-    background-color: rgb(219, 219, 219);
-    border-color: rgb(219, 219, 219);
-    color: rgb(89, 89, 89)
+  border-color: rgb(219 219 219);
+  background-color: rgb(219 219 219);
+  color: rgb(89 89 89);
 }
 
 .blue {
-    background-color: rgb(92, 157, 237);
-    border-color: rgb(92, 157, 237);
+  border-color: rgb(92 157 237);
+  background-color: rgb(92 157 237);
 }
 
 .green {
-    background-color: rgb(66, 203, 110);
-    border-color: rgb(66, 203, 110);
+  border-color: rgb(66 203 110);
+  background-color: rgb(66 203 110);
 }
 
 .tiel {
-    background-color: rgb(78, 194, 231);
-    border-color: rgb(78, 194, 231);
+  border-color: rgb(78 194 231);
+  background-color: rgb(78 194 231);
 }
 
 .yellow {
-    background-color:  rgb(252, 206, 84);
-    border-color: rgb(252, 206, 84);
+  border-color: rgb(252 206 84);
+  background-color: rgb(252 206 84);
 }
 
 .red {
-    background-color: rgb(237, 85, 100);
-    border-color: rgb(237, 85, 100);
+  border-color: rgb(237 85 100);
+  background-color: rgb(237 85 100);
+}
+
+.empty .gray {
+  color: rgb(219 219 219);
+}
+
+.empty .blue {
+  color: rgb(92 157 237);
+}
+
+.empty .green {
+  color: rgb(66 203 110);
+}
+
+.empty .tiel {
+  color: rgb(78 194 231);
+}
+
+.empty .yellow {
+  color: rgb(252 206 84);
+}
+
+.empty .red {
+  color: rgb(237 85 100);
 }

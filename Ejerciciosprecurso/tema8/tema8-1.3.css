@@ -1,26 +1,26 @@
 body {
-    width: 902px;
-    height: 550px;
-    background-color: rgb(49, 49, 49);
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    background-color: rgb(49 49 49);
+    width: 902px;
+    height: 550px;
 }
 
 div {
-    height: 150px;
-    width: 150px;
-    background-color: rgb(220, 220, 220);
-    border: 5px solid;
-    border-color: white;
-    color:rgb(153, 153, 153);
-    margin: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: 10px;
+    border: 5px solid;
+    border-color: white;
+    background-color: rgb(220 220 220);
+    width: 150px;
+    height: 150px;
+    color:rgb(153 153 153);
 }
 
 div:hover {
+    box-shadow: rgb(213 211 211) 0 5px 15px;
     cursor: pointer;
-    box-shadow: rgb(213, 211, 211) 0px 5px 15px;
 }

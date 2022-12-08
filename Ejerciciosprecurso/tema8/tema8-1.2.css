@@ -1,21 +1,21 @@
 .pic {
-    height: 120px;
-    width: 120px;
     display: flex;
     align-items: center;
     margin: 15px;
+    width: 120px;
+    height: 120px;
 }
 
 div {
-    height: 145px;
-    width: 455px;
     display: flex;
     align-items: center;
+    width: 455px;
+    height: 145px;
 }
 
 
 div:hover {
-    background-color:  rgb(226, 226, 226);
+    background-color:  rgb(226 226 226);
     cursor: pointer;
 }
 

@@ -7,26 +7,26 @@ html {
 }
 
 body {
+  margin: 0 auto;
+  max-width: 800px;
   height: inherit;
   overflow: hidden;
-  max-width: 800px;
-  margin: 0 auto;
 }
 
 h1, p {
-  font-family: sans-serif;
-  text-align: center;
   padding: 20px;
+  text-align: center;
+  font-family: sans-serif;
 }
 
 div {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgb(255 255 255 / 20%);
   height: 100px;
   overflow: auto;
-  position: absolute;
-  bottom: 0px;
-  right: 0;
-  left: 0;
-  background-color: rgba(255,255,255,0.2);
 }
 
 ul {
@@ -34,5 +34,5 @@ ul {
 }
 
 .hints span {
-  text-shadow: 0px 0px 6px rgba(255,255,255,0.7);
+  text-shadow: 0 0 6px rgb(255 255 255 / 70%);
 }

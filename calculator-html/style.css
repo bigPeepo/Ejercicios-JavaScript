@@ -3,40 +3,40 @@ html {
 }
 
 body {
-    color: white;
-    font-family: sans-serif;
-    background-color: rgb(245, 245, 245);
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: rgb(245 245 245);
     min-height: 100%;
+    color: white;
+    font-family: sans-serif;
 }
 
 .container {
-    background-color: rgb(13, 13, 13);
-    border-radius: 8vmin;
-    height: 90vh;
-    width: 56vh;
     display: grid;
     grid-template-rows: 3fr 5fr;
-    box-shadow: rgba(0, 0, 0, 0.526) 0vh 5vh 15vh;
+    border-radius: 8vmin;
+    box-shadow: rgb(0 0 0 / 52.6%) 0 5vh 15vh;
+    background-color: rgb(13 13 13);
+    width: 56vh;
+    height: 90vh;
 }
 
 #displayid {
-    font-size: 11vh;
-    font-weight: lighter;
     align-self: flex-end;
     justify-self: flex-end;
     padding-right: 4vh;
+    font-size: 11vh;
+    font-weight: lighter;
 }
 
 .buttons {
     display: flex;
     flex-direction: column;
-    font-size: 4vh;
-    max-height: 100%;
     justify-content: space-between;
     margin: 1vh;
+    max-height: 100%;
+    font-size: 4vh;
 }
 
 .buttons div {
@@ -46,14 +46,14 @@ body {
 
 
 .button {
-    background-color: rgb(59, 59, 59);
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    margin: 0.8vh;
     border-radius: 50%;
+    background-color: rgb(59 59 59);
     width: 10vh;
     height: 10vh;
-    display: flex;
-    justify-items: center;
-    align-items: center;
-    margin: 0.8vh;
 }
 
 .orange {
@@ -62,8 +62,8 @@ body {
 
 
 .double {
-    background-color: rgb(59, 59, 59);
     border-radius: 15ch;
+    background-color: rgb(59 59 59);
     width: 23.5vh;
     height: 10vh;
 }
@@ -73,27 +73,27 @@ body {
 }
 
 .light-gray {
-    background-color: rgb(171, 171, 171);
-    color: rgb(13, 13, 13);
+    background-color: rgb(171 171 171);
+    color: rgb(13 13 13);
 }
 
 .button:hover {
-    background-color: rgb(109, 109, 109);
     transition: 0.2s ease-in-out;
+    background-color: rgb(109 109 109);
 }
 
 .button:active {
-    box-shadow: rgba(52, 52, 52, 0.797) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.524) 0px 18px 36px -18px inset;
+    box-shadow: rgb(52 52 52 / 79.7%) 0 30px 60px -12px inset, rgb(0 0 0 / 52.4%) 0 18px 36px -18px inset;
 }
 
 .light-gray:hover {
-    background-color: rgb(208, 208, 208);
     transition: 0.2s ease-in-out;
+    background-color: rgb(208 208 208);
 }
 
 .orange:hover {
-    background-color: rgb(254, 213, 136);
     transition: 0.2s ease-in-out;
+    background-color: rgb(254 213 136);
 }
 
 

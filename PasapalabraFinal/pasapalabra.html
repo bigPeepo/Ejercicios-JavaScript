@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Calculator JS-HTML-CSS</title>
+    <title>Pasapalabra JS-HTML-CSS</title>
     <link
       rel="icon"
       type="image/x-icon"
@@ -14,13 +14,14 @@
       @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@800&display=swap");
     </style>
   </head>
+
   <body>
     <div class="video-and-letters-container">
       <div class="video-container">
         <video autoplay="true" id="videoElement"></video>
       </div>
 
-      <div class="circle" style="--total: 12" id="rosco">
+      <div class="circle" style="--total: 26" id="rosco">
         <div class="letter-container" id="A" style="--i: 1">A</div>
         <div class="letter-container" id="B" style="--i: 2">B</div>
         <div class="letter-container" id="C" style="--i: 3">C</div>
@@ -56,9 +57,19 @@
           Como se llama el hijo de tu padre que no es tu hermano?
         </div>
         <form id="answer-buttons-container">
-          <div class="text-form"><input type="text" name="answer" placeholder="answer" for="newAnswer" id="text-input"></input></div> <!-- who is it for  -->
+          <div class="text-form">
+            <input
+              type="text"
+              name="answer"
+              placeholder="answer"
+              id="text-input"
+            />
+          </div>
+          <!-- who is it for  -->
           <div class="buttons-container">
-            <button class="button mint-green" id="submit" from="newAnswer">Submit</button>
+            <button class="button mint-green" id="submit" from="newAnswer">
+              Submit
+            </button>
             <button class="button yellow" id="record">🎤</button>
             <button class="button orange" id="pasapalabra">Pasapalabra</button>
           </div>

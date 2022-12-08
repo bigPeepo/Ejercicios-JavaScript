@@ -573,7 +573,7 @@ let rankingSorted = [];
 
 let startTime = Date.now();
 
-const SECONDS_ASSIGNED = 13;
+const SECONDS_ASSIGNED = 130;
 
 const setTime = SECONDS_ASSIGNED * 1000;
 
@@ -632,7 +632,7 @@ const transparencyCircle = document.getElementById("innermost-circle");
 let pause = false;
 
 const countdownTimer = () => {
-  let startTime = 1400;
+  let startTime = 14000;
   let timeAssigned = startTime;
   let angle;
 
@@ -671,7 +671,7 @@ countdownTimer();
 
 // Webcam feed
 
-const video = document.querySelector("#videoElement");
+const video = document.querySelector("#video-element");
 
 if (navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices

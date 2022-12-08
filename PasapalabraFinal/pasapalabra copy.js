@@ -713,7 +713,7 @@ function countdownTimer() {
 
 // Webcam feed
 
-const video = document.querySelector("#videoElement");
+const video = document.querySelector("#video-element");
 
 if (navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices
