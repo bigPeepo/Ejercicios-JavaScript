@@ -541,29 +541,11 @@ const questions3 = [
   },
 ];
 
-const currentQuestion = document.getElementById("current-question");
-
-const currentLetter = document.getElementById("question-header");
-
-const submit = document.getElementById("submit");
-
-const pasa = document.getElementById("pasapalabra");
-
-const record = document.getElementById("record");
-
-const textForm = document.getElementById("answer-buttons-container");
-
-const timer = document.getElementById("timer");
-
-const correctAnswersCounter = document.getElementById("correct-answers");
-
-const wrongAnswersCounter = document.getElementById("wrong-answers");
-
-let skippedLetter;
-
+const NUMBER_OF_QUESTION_DATABASES = 3;
 let currentQuestionDatabase = questions;
 
-const NUMBER_OF_QUESTION_DATABASES = 3;
+const SECONDS_ASSIGNED = 10;
+const setTime = SECONDS_ASSIGNED * 1000;
 
 let gameCounter = 1;
 
@@ -571,11 +553,20 @@ let objectToEncapsulateRankingMetrics = {};
 
 let rankingSorted = [];
 
-let startTime = Date.now();
+const currentLetter = document.getElementById("question-header");
+const currentQuestion = document.getElementById("current-question");
 
-const SECONDS_ASSIGNED = 130;
+const textForm = document.getElementById("answer-buttons-container");
 
-const setTime = SECONDS_ASSIGNED * 1000;
+const submitButton = document.getElementById("submit");
+const pasapalabraButton = document.getElementById("pasapalabra");
+const recordButton = document.getElementById("record");
+
+const timer = document.getElementById("timer");
+const correctAnswersCounter = document.getElementById("correct-answers");
+const wrongAnswersCounter = document.getElementById("wrong-answers");
+
+const video = document.querySelector("#video-element");
 
 let message = new SpeechSynthesisUtterance();
 
@@ -587,8 +578,8 @@ const setDefaultState = () => ({
   wrongAnswers: 0,
   answerCounter: 0,
   timeAssigned: SECONDS_ASSIGNED * 1000,
+  secs: SECONDS_ASSIGNED * 1000,
   paused: false,
-  secs: 0,
   answer: "",
   stillPlaying: true,
   objectToEncapsulateSolutionsWrongAnswersAndTurn: {
@@ -623,55 +614,54 @@ const setDefaultState = () => ({
 });
 
 let state = setDefaultState();
+
 // Timer bar
 
-const semicircles = document.querySelectorAll(".semicircles");
+const timerSemicircles = document.querySelectorAll(".semicircles");
 
-const transparencyCircle = document.getElementById("innermost-circle");
-
-let pause = false;
+const timerTransparencyEffectCircle =
+  document.getElementById("innermost-circle");
 
 const countdownTimer = () => {
-  let startTime = 14000;
-  let timeAssigned = startTime;
   let angle;
 
-  setInterval(function () {
+  const myInterval = setInterval(function () {
     if (!state.paused) {
-      timeAssigned--;
-      timer.innerHTML = Math.ceil(timeAssigned / 100);
-      angle = (timeAssigned / startTime) * 360;
+      state.secs = state.secs - 100;
+      timer.innerHTML = Math.ceil(state.secs / 1000);
+      angle = (state.secs / state.timeAssigned) * 360;
 
       if (angle > 180) {
-        semicircles[0].style.transform = "rotate(180deg)";
-        semicircles[1].style.transform = `rotate(${angle}deg`;
-        semicircles[2].style.display = "none";
-        semicircles[3].style.transform = `rotate(${180 + angle}deg`;
+        timerSemicircles[0].style.transform = "rotate(180deg)";
+        timerSemicircles[1].style.transform = `rotate(${angle}deg`;
+        timerSemicircles[2].style.display = "none";
+        timerSemicircles[3].style.transform = `rotate(${180 + angle}deg`;
       } else {
-        semicircles[0].style.transform = `rotate(${angle}deg`;
-        semicircles[1].style.transform = `rotate(${angle}deg`;
-        semicircles[2].style.display = "block";
-        semicircles[3].style.transform = `rotate(${180 + angle}deg`;
+        timerSemicircles[0].style.transform = `rotate(${angle}deg`;
+        timerSemicircles[1].style.transform = `rotate(${angle}deg`;
+        timerSemicircles[2].style.display = "block";
+        timerSemicircles[3].style.transform = `rotate(${180 + angle}deg`;
       }
 
-      if (timeAssigned < 0) {
-        semicircles[0].style.display = "none";
-        semicircles[1].style.display = "none";
-        semicircles[2].style.display = "none";
-        semicircles[3].style.display = "none";
-        transparencyCircle.style.visibility = "visible";
+      if (state.secs < 0) {
+        timerSemicircles[0].style.display = "none";
+        timerSemicircles[1].style.display = "none";
+        timerSemicircles[2].style.display = "none";
+        timerSemicircles[3].style.display = "none";
+        timerTransparencyEffectCircle.style.visibility = "visible";
 
         timer.innerHTML = "0";
+
+        clearInterval(myInterval);
+        endGame();
       }
     }
-  }, 10);
+  }, 100);
 };
 
 countdownTimer();
 
 // Webcam feed
-
-const video = document.querySelector("#video-element");
 
 if (navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices
@@ -679,9 +669,7 @@ if (navigator.mediaDevices.getUserMedia) {
     .then(function (stream) {
       video.srcObject = stream;
     })
-    .catch(function (err0r) {
-      console.log("Something went wrong!");
-    });
+    .catch(function (err0r) {});
 }
 
 //nuevo
@@ -807,12 +795,12 @@ const questionPrompt = () => {
 };
 
 const checkIfWeCountTheAnswer = () => {
-  timeOutOrEnd();
+  endInput();
   checkForPasapalabra();
   markLetterAsAnswered();
 };
 
-const timeOutOrEnd = () => {
+const endInput = () => {
   if (state.answer === "end") {
     return endGame();
   }
@@ -822,7 +810,6 @@ const checkForPasapalabra = () => {
   if (
     state.answer === "pasapalabra" ||
     state.answer === "" ||
-    skippedLetter ||
     !state.stillPlaying
   ) {
     turnAdd1();
@@ -1019,23 +1006,38 @@ const rankingSorter = () => {
       return 0;
     }
   );
-  return rankingSorted;
+  console.log(rankingSorted.slice(0, 4)); // 5 MAX
+
+  return rankingSorted.slice(0, 4);
 };
+
+const rankingContainer = document.getElementById("ranking-container");
+const pannel = document.getElementById("pannel");
 
 const displayRanking = () => {
   rankingSorter();
-  console.table(rankingSorted);
-
-  let informationPannel = [];
 
   for (let i = 0; i < Object.values(rankingSorted).length; i++) {
-    rankingSorted[
-      i
-    ].string = `${rankingSorted[i].username} answered ${rankingSorted[i].correctAnswers} answers correctly and ${rankingSorted[i].wrongAnswers} incorrectly. ${rankingSorted[i].username} finished the game with ${rankingSorted[i].secondsLeft} seconds left.\n`;
-    informationPannel.push(rankingSorted[i].string);
+    const fillRankingDiv = (element, value) => {
+      document
+        .getElementById(`${i + 1}`)
+        .querySelector(`${element}`).innerHTML = value;
+    };
+
+    rankingSorted[i].username = "Johnny";
+
+    fillRankingDiv(".username", rankingSorted[i].username);
+    fillRankingDiv(".correct-answers", rankingSorted[i].correctAnswers);
+    fillRankingDiv(".wrong-answers", rankingSorted[i].wrongAnswers);
+    fillRankingDiv(".seconds-left", rankingSorted[i].secondsLeft);
   }
-  alert(informationPannel.join(" "));
-  playAnotherRound();
+
+  pannel.classList.add("hidden");
+  rankingContainer.classList.remove("hidden");
+
+  setTimeout(() => {
+    playAnotherRound();
+  }, 60000);
 };
 
 const playAnotherRound = () => {
@@ -1082,9 +1084,7 @@ const endGame = () => {
   }
 
   if (state.secs <= 0) {
-    alert(
-      `Time out!!!\n\n You didn't answer the last question on time, so we won´t be evaluation your answer "${state.answer}"`
-    );
+    alert(`Time out!!!`);
 
     recordScore();
     return displayRanking();
@@ -1160,7 +1160,7 @@ currentQuestion.innerHTML = getQuestionFromCounter(state.turnCounter).split(
   "."
 )[1];
 
-submit.addEventListener("click", (e) => {
+submitButton.addEventListener("click", (e) => {
   e.preventDefault();
 
   state.answer = document.getElementById("text-input").value;
@@ -1171,18 +1171,17 @@ submit.addEventListener("click", (e) => {
 
   nextPlease();
 });
-
-pasa.addEventListener("click", (e) => {
+pasapalabraButton.addEventListener("click", (e) => {
   e.preventDefault();
 
-  skippedLetter = true;
+  state.answer = "pasapalabra";
 
   window.speechSynthesis.cancel();
 
   nextPlease();
 });
 
-record.addEventListener("click", (e) => {
+recordButton.addEventListener("click", (e) => {
   e.preventDefault();
 
   window.speechSynthesis.cancel();

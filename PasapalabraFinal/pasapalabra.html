@@ -50,7 +50,52 @@
         <div class="letter-container" id="Z" style="--i: 26">Z</div>
       </div>
     </div>
-    <div class="pannel">
+    <div class="ranking-container hidden" id="ranking-container">
+      <div id="ranking-header">TOP SCORES</div>
+      <div id="ranking">
+        <div id="rank-names" class="score-container">
+          <div class="name">username</div>
+          <div class="name">correct answers</div>
+          <div class="name">wrong answers</div>
+          <div class="name">seconds left</div>
+        </div>
+        <div id="1" class="score-container">
+          <div class="username">Johnny</div>
+          <div class="correct-answers"></div>
+          <div class="wrong-answers"></div>
+          <div class="seconds-left"></div>
+        </div>
+        <div class="score-container" id="2">
+          <div class="username"></div>
+          <div class="correct-answers"></div>
+          <div class="wrong-answers"></div>
+          <div class="seconds-left"></div>
+        </div>
+        <div class="score-container" id="3">
+          <div class="username"></div>
+          <div class="correct-answers"></div>
+          <div class="wrong-answers"></div>
+          <div class="seconds-left"></div>
+        </div>
+        <div class="score-container" id="4">
+          <div class="username"></div>
+          <div class="correct-answers"></div>
+          <div class="wrong-answers"></div>
+          <div class="seconds-left"></div>
+        </div>
+        <div class="score-container" id="5">
+          <div class="username"></div>
+          <div class="correct-answers"></div>
+          <div class="wrong-answers"></div>
+          <div class="seconds-left"></div>
+        </div>
+      </div>
+      <div class="options-button-container">
+        <button class="button yellow" id="play-again">Play again</button>
+        <button class="button orange" id="end-game">End game</button>
+      </div>
+    </div>
+    <div class="pannel" id="pannel">
       <div class="question-container">
         <div id="question-header">With the letter L</div>
         <div id="current-question">
@@ -65,7 +110,6 @@
               id="text-input"
             />
           </div>
-          <!-- who is it for  -->
           <div class="buttons-container">
             <button class="button mint-green" id="submit" from="newAnswer">
               Submit
